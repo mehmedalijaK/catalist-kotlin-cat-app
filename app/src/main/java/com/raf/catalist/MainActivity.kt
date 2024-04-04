@@ -3,15 +3,8 @@ package com.raf.catalist
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import com.raf.catalist.model.AppNavigation
-import com.raf.catalist.ui.theme.CatalistTheme
+import com.raf.catalist.navigation.AppNavigation
+import com.raf.catalist.core.theme.CatalistTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
