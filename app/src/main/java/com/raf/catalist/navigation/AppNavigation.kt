@@ -6,6 +6,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.raf.catalist.cats.details.BreedDetailScreen
+import com.raf.catalist.cats.details.breedDetails
 import com.raf.catalist.cats.list.BreedsListScreen
 import com.raf.catalist.cats.list.breedsListScreen
 
@@ -22,6 +23,11 @@ fun AppNavigation() {
     ){
         breedsListScreen(
             route = "home",
+            navController = navController
+        )
+
+        breedDetails(
+            route = "breeds/{id}",
             navController = navController
         )
     }

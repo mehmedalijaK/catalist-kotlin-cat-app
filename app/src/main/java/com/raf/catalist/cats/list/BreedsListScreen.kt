@@ -99,7 +99,10 @@ fun NavGraphBuilder.breedsListScreen(
     val state by breedsListViewModel.state.collectAsState()
 
     BreedsListScreen(
-        state = state
+        state = state,
+        onItemClick = {
+            navController.navigate(route = "breeds/${it.id}")
+        }
     )
 }
 
@@ -108,7 +111,8 @@ fun NavGraphBuilder.breedsListScreen(
 @Composable
 @ExperimentalMaterial3Api
 fun BreedsListScreen(
-    state: BreedsListState
+    state: BreedsListState,
+    onItemClick: (BreedData) -> Unit
 ) {
     Scaffold (
         topBar = {
@@ -143,7 +147,8 @@ fun BreedsListScreen(
             }else{
                 BreedsList(
                     paddingValues = it,
-                    items = state.breeds
+                    items = state.breeds,
+                    onItemClick = onItemClick
                 )
             }
         }
@@ -154,7 +159,8 @@ fun BreedsListScreen(
 @Composable
 fun BreedsList(
     paddingValues: PaddingValues,
-    items: List<BreedData>
+    items: List<BreedData>,
+    onItemClick: (BreedData) -> Unit
 ){
 
     val scrollState = rememberScrollState()
@@ -175,6 +181,9 @@ fun BreedsList(
                     key(it.id) {
                         BreedListItem(
                             data = it,
+                            onClick = {
+                                onItemClick(it)
+                            }
                         )
                     }
                     Spacer(modifier = Modifier.height(16.dp))
@@ -182,10 +191,6 @@ fun BreedsList(
             }
         }
     }
-
-
-
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -257,11 +262,15 @@ fun SearchBarM3(){
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
-fun BreedListItem(data: BreedData) {
+fun BreedListItem(
+    data: BreedData,
+    onClick: () -> Unit,
+) {
     Card(
         modifier = Modifier
             .padding(horizontal = 16.dp)
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable { onClick() },
         elevation = CardDefaults.cardElevation(11.dp)
     ) {
         Column(
@@ -308,7 +317,7 @@ fun BreedListItem(data: BreedData) {
                             label = { Text(text = temp, fontSize = 12.sp) }
                         )
                     }
-                    IconButton(onClick = {}) {
+                    IconButton(onClick = {onClick()}) {
                         Icon(
                             imageVector = Icons.Default.KeyboardArrowRight,
                             contentDescription = null

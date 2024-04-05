@@ -5,7 +5,10 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import kotlin.time.Duration.Companion.seconds
 
 // Single static instance -> single source of truth for Breeds
 object BreedsRepository {
@@ -24,5 +27,15 @@ object BreedsRepository {
         delay(3)
         breeds.update{ SampleData.toMutableList() }
     }
+
+    suspend fun fetchBreedDetails(breedId: String) {
+        delay(1.seconds)
+    }
+
     fun observeBreeds(): Flow<List<BreedData>> = breeds.asStateFlow()
+    fun observeBreedDetails(breedId: String): Flow<BreedData?> {
+        return observeBreeds()
+            .map { breeds -> breeds.find { it.id == breedId } }
+            .distinctUntilChanged()
+    }
 }
