@@ -204,17 +204,20 @@ fun BreedCard(
                         fontSize = 21.sp
                     )
                     Spacer(modifier = Modifier.weight(1f)) // Ensure flexible space between Text and AssistChip
-                    AssistChip(
-                        onClick = { },
-                        label = { Text("Rare") },
-                        leadingIcon = {
-                            Icon(
-                                Icons.Filled.Check,
-                                contentDescription = "Localized description",
-                                tint = Color(0xff10bf00)
-                            )
-                        },
-                    )
+                    if(data.rare != 0){
+                        AssistChip(
+                            onClick = { },
+                            label = { Text("Rare") },
+                            leadingIcon = {
+                                Icon(
+                                    Icons.Filled.Check,
+                                    contentDescription = "Localized description",
+                                    tint = Color(0xff10bf00)
+                                )
+                            },
+                        )
+                    }
+
                 }
                 Row(
                     verticalAlignment = Alignment.CenterVertically,
