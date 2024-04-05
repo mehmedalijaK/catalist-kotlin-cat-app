@@ -5,8 +5,11 @@ import android.content.res.Resources
 import android.media.Image
 import android.util.Log
 import androidx.compose.animation.animateContentSize
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.LinearOutSlowInEasing
+import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -194,8 +197,21 @@ fun SearchBarM3(){
 
     val searchHistory = listOf("Abyssinian", "Aegean", "American Bobtail","Abyssinian", "Aegean", "American Bobtail","Abyssinian", "Aegean", "American Bobtail","Abyssinian", "Aegean", "American Bobtail")
 
+    val transition = updateTransition(targetState = active, label = "")
+    val width by transition.animateDp(
+        transitionSpec = {
+            if (false isTransitioningTo true) {
+                tween(durationMillis = 300, easing = LinearEasing)
+            } else {
+                tween(durationMillis = 300, easing = LinearEasing)
+            }
+        }, label = ""
+    ) { state ->
+        if (state) 0.dp else 16.dp
+    }
+
     SearchBar(
-        modifier = if (active) Modifier.fillMaxWidth() else Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        modifier = if (active) Modifier.fillMaxWidth() else Modifier.fillMaxWidth().padding(horizontal = width),
         query = query,
         onQueryChange = {query = it},
         onSearch = {newQuery ->
@@ -226,7 +242,7 @@ fun SearchBarM3(){
             ListItem(
                 modifier = Modifier
                     .clickable { query = item }
-                    .fillMaxWidth(),
+                   ,
                 headlineContent = {Text(text = item)},
                 leadingContent = {
                     Icon(
