@@ -24,17 +24,27 @@ class BreedsListViewModel constructor(
     private fun setState(reducer: BreedsListState.() -> BreedsListState) = _state.getAndUpdate(reducer)
 
     init {
+        observeBreeds()
         fetchBreeds()
+    }
+
+    private fun observeBreeds() {
+        // We are launching a new coroutine
+        viewModelScope.launch {
+            // Which will observe all changes to our passwords
+            repository.observeBreeds().collect {
+                setState { copy(breeds = it) }
+            }
+        }
     }
 
     private fun fetchBreeds() {
         viewModelScope.launch {
             setState { copy(loading = true) }
             try {
-                val breeds = withContext(Dispatchers.IO) {
-                    repository.allBreeds()
+                withContext(Dispatchers.IO) {
+                    repository.fetchBreeds()
                 }
-                setState { copy(breeds = breeds) }
             } catch (error: IOException) {
                 setState { copy(error = BreedsListState.ListError.LoadingListFailed(cause = error)) }
             } finally {

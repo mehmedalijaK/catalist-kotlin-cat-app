@@ -24,12 +24,5 @@ fun AppNavigation() {
             route = "home",
             navController = navController
         )
-        composable(
-            route = "details"
-        ){
-            BreedDetailScreen(
-
-            )
-        }
     }
 }
