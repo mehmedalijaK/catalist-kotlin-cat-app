@@ -28,8 +28,11 @@ import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
@@ -37,13 +40,18 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Divider
+import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SearchBar
+import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.contentColorFor
@@ -51,6 +59,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -106,17 +118,13 @@ fun BreedsListScreen(
              )
         },
         content = {
-            BreedsList(
-                paddingValues = it,
-                items = state.breeds
-            )
+
             if(state.loading){
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ){
                     CircularProgressIndicator()
-                    Text(text = "t123123est")
                 }
             }else if(state.error != null){
                 Box(
@@ -130,12 +138,16 @@ fun BreedsListScreen(
                     Text(text = errorMessage)
                 }
             }else{
-                Text(text = "test")
+                BreedsList(
+                    paddingValues = it,
+                    items = state.breeds
+                )
             }
         }
     )
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BreedsList(
     paddingValues: PaddingValues,
@@ -143,28 +155,88 @@ fun BreedsList(
 ){
 
     val scrollState = rememberScrollState()
-    Column(
-        modifier = Modifier
-            .verticalScroll(scrollState)
-            .fillMaxSize()
-            .padding(paddingValues),
+    Column (
+        modifier = Modifier.padding(paddingValues),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ){
-        Spacer(modifier = Modifier.height(16.dp))
-
-        items.forEach {
-            Column {
-                key(it.id) {
-                    BreedListItem(
-                        data = it,
-                    )
+        SearchBarM3()
+        Spacer(modifier = Modifier.height(10.dp))
+        Column(
+            modifier = Modifier
+                .verticalScroll(scrollState)
+                .fillMaxSize(),
+        ){
+            items.forEach {
+                Column {
+                    key(it.id) {
+                        BreedListItem(
+                            data = it,
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
-                Spacer(modifier = Modifier.height(16.dp))
             }
         }
     }
 
+
+
+
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun SearchBarM3(){
+
+    var query by remember { mutableStateOf("") }
+    var active by remember { mutableStateOf(false) }
+
+    val searchHistory = listOf("Abyssinian", "Aegean", "American Bobtail","Abyssinian", "Aegean", "American Bobtail","Abyssinian", "Aegean", "American Bobtail","Abyssinian", "Aegean", "American Bobtail")
+
+    SearchBar(
+        modifier = if (active) Modifier.fillMaxWidth() else Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        query = query,
+        onQueryChange = {query = it},
+        onSearch = {newQuery ->
+                   println("test")
+        },
+        active = active,
+        onActiveChange = {
+            active = it
+        },
+        placeholder = { Text(text = "Search cats")},
+        leadingIcon = {
+            Icon(imageVector = Icons.Filled.Search, contentDescription = "search")
+        },
+        trailingIcon = {
+            Row {
+                IconButton(onClick = { }) {
+                    Icon(painter = painterResource(id = R.drawable.baseline_mic_24), contentDescription = "Microphone")
+                }
+                if (active){
+                    IconButton(onClick = { if (query.isNotEmpty()) query = "" else active = false}) {
+                        Icon(imageVector = Icons.Filled.Close, contentDescription = "Close")
+                    }
+                } else null
+            }
+        },
+    ) {
+        searchHistory.takeLast(3).forEach { item ->
+            ListItem(
+                modifier = Modifier
+                    .clickable { query = item }
+                    .fillMaxWidth(),
+                headlineContent = {Text(text = item)},
+                leadingContent = {
+                    Icon(
+                        painter = painterResource(R.drawable.baseline_history_24),
+                        contentDescription = "History"
+                    )
+                }
+            )
+        }
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
