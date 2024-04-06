@@ -27,13 +27,6 @@ class BreedDetailsViewModel constructor(
         _state.getAndUpdate(reducer)
 
 
-    private val events = MutableSharedFlow<BreedDetailsUiEvent>()
-    fun setEvent(event: BreedDetailsUiEvent) {
-        viewModelScope.launch {
-            events.emit(event)
-        }
-    }
-
     init{
         observeBreedDetails()
         fetchBreedDetails()
@@ -58,7 +51,7 @@ class BreedDetailsViewModel constructor(
                 }
             } catch (error: IOException) {
                 setState {
-                    copy(error = BreedDetailsState.DetailsError.DataUpdateFailed(cause = error))
+                    copy(error = BreedDetailsState.DetailsError.DataFetchFailed(cause = error))
                 }
             } finally {
                 setState { copy(loading = false) }

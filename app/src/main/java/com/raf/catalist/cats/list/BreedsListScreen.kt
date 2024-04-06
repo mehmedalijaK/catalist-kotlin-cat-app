@@ -1,12 +1,7 @@
 package com.raf.catalist.cats.list
 
-import android.annotation.SuppressLint
-import android.content.res.Resources
-import android.media.Image
 import android.util.Log
-import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.LinearOutSlowInEasing
 import androidx.compose.animation.core.animateDp
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.core.updateTransition
@@ -16,43 +11,30 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ExperimentalLayoutApi
-import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material3.AssistChip
-import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.Divider
-import androidx.compose.material3.DockedSearchBar
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
-import androidx.compose.material3.SearchBarDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
@@ -83,6 +65,7 @@ import androidx.navigation.compose.composable
 import com.google.android.material.chip.Chip
 import com.raf.catalist.R
 import com.raf.catalist.cats.domain.BreedData
+import com.raf.catalist.core.compose.NoDataMessage
 import com.raf.catalist.core.theme.Orange40
 import com.raf.catalist.core.theme.Orange80
 import com.raf.catalist.core.theme.Yellow40
@@ -100,6 +83,9 @@ fun NavGraphBuilder.breedsListScreen(
 
     BreedsListScreen(
         state = state,
+        eventPublisher = {
+            breedsListViewModel.publishEvent(it)
+        },
         onItemClick = {
             navController.navigate(route = "breeds/${it.id}")
         }
@@ -112,6 +98,7 @@ fun NavGraphBuilder.breedsListScreen(
 @ExperimentalMaterial3Api
 fun BreedsListScreen(
     state: BreedsListState,
+    eventPublisher: (BreedListUiEvent) -> Unit,
     onItemClick: (BreedData) -> Unit
 ) {
     Scaffold (
@@ -148,7 +135,8 @@ fun BreedsListScreen(
                 BreedsList(
                     paddingValues = it,
                     items = state.breeds,
-                    onItemClick = onItemClick
+                    onItemClick = onItemClick,
+                    eventPublisher = eventPublisher
                 )
             }
         }
@@ -160,7 +148,8 @@ fun BreedsListScreen(
 fun BreedsList(
     paddingValues: PaddingValues,
     items: List<BreedData>,
-    onItemClick: (BreedData) -> Unit
+    onItemClick: (BreedData) -> Unit,
+    eventPublisher: (BreedListUiEvent) -> Unit
 ){
 
     val scrollState = rememberScrollState()
@@ -169,33 +158,40 @@ fun BreedsList(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ){
-        SearchBarM3()
+        SearchBarM3(eventPublisher = eventPublisher)
         Spacer(modifier = Modifier.height(10.dp))
-        Column(
-            modifier = Modifier
-                .verticalScroll(scrollState)
-                .fillMaxSize(),
-        ){
-            items.forEach {
-                Column {
-                    key(it.id) {
-                        BreedListItem(
-                            data = it,
-                            onClick = {
-                                onItemClick(it)
-                            }
-                        )
+        if(items.isEmpty()){
+            NoDataMessage()
+        }else{
+            Column(
+                modifier = Modifier
+                    .verticalScroll(scrollState)
+                    .fillMaxSize(),
+            ){
+                items.forEach {
+                    Column {
+                        key(it.id) {
+                            BreedListItem(
+                                data = it,
+                                onClick = {
+                                    onItemClick(it)
+                                },
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(16.dp))
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
+
     }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun SearchBarM3(){
+fun SearchBarM3(
+    eventPublisher: (BreedListUiEvent) -> Unit,
+){
 
     var query by remember { mutableStateOf("") }
     var active by remember { mutableStateOf(false) }
@@ -220,7 +216,8 @@ fun SearchBarM3(){
         query = query,
         onQueryChange = {query = it},
         onSearch = {newQuery ->
-                   println("test")
+                   eventPublisher(BreedListUiEvent.RequestDataFilter(newQuery))
+                    active = false
         },
         active = active,
         onActiveChange = {
@@ -283,7 +280,6 @@ fun BreedListItem(
                     .height(150.dp),
                 contentScale = androidx.compose.ui.layout.ContentScale.Crop // Crop the image to fit
             )
-
             Column (
                 modifier = Modifier.padding(10.dp)
             ){

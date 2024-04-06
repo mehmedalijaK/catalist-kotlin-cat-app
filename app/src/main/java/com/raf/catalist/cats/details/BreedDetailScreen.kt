@@ -98,7 +98,6 @@ fun NavGraphBuilder.breedDetails(
         factory = object : ViewModelProvider.Factory {
             @Suppress("UNCHECKED_CAST")
             override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                // We pass the passwordId which we read from arguments above
                 return BreedDetailsViewModel(breedId = dataId) as T
             }
         },
@@ -155,7 +154,7 @@ fun BreedDetailScreen(
                     contentAlignment = Alignment.Center
                 ){
                     val errorMessage = when (state.error){
-                        is BreedDetailsState.DetailsError.DataUpdateFailed ->
+                        is BreedDetailsState.DetailsError.DataFetchFailed ->
                             "Failed to load, internet connection error. Error: ${state.error.cause?.message}"
                     }
                     Text(text = errorMessage)

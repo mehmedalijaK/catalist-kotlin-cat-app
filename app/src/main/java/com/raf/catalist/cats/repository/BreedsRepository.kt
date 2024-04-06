@@ -38,4 +38,16 @@ object BreedsRepository {
             .map { breeds -> breeds.find { it.id == breedId } }
             .distinctUntilChanged()
     }
+
+    fun filterData(catName: String) {
+        breeds.update { list ->
+            if (catName.isEmpty()) {
+                // Return all breeds if catName is empty
+                SampleData.toMutableList()
+            } else {
+                // Filter breeds based on catName
+                SampleData.toMutableList().filter { it.name.contains(catName, ignoreCase = true) }
+            }
+        }
+    }
 }

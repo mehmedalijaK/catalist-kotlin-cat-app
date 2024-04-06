@@ -10,6 +10,6 @@ data class BreedDetailsState (
     val error: DetailsError? = null
 ){
     sealed class DetailsError {
-        data class DataUpdateFailed(val cause: Throwable? = null) : DetailsError()
+        data class DataFetchFailed(val cause: Throwable? = null) : DetailsError()
     }
 }
