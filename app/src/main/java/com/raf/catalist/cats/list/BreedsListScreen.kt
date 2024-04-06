@@ -10,7 +10,6 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,8 +20,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
@@ -36,22 +35,17 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.material3.contentColorFor
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.modifier.modifierLocalMapOf
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -62,13 +56,9 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
-import com.google.android.material.chip.Chip
 import com.raf.catalist.R
 import com.raf.catalist.cats.domain.BreedData
 import com.raf.catalist.core.compose.NoDataMessage
-import com.raf.catalist.core.theme.Orange40
-import com.raf.catalist.core.theme.Orange80
-import com.raf.catalist.core.theme.Yellow40
 
 @ExperimentalMaterial3Api
 fun NavGraphBuilder.breedsListScreen(
@@ -143,7 +133,6 @@ fun BreedsListScreen(
     )
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BreedsList(
     paddingValues: PaddingValues,
@@ -183,7 +172,6 @@ fun BreedsList(
                 }
             }
         }
-
     }
 }
 
@@ -236,7 +224,7 @@ fun SearchBarM3(
                     IconButton(onClick = { if (query.isNotEmpty()) query = "" else active = false}) {
                         Icon(imageVector = Icons.Filled.Close, contentDescription = "Close")
                     }
-                } else null
+                }
             }
         },
     ) {
@@ -257,7 +245,6 @@ fun SearchBarM3(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun BreedListItem(
     data: BreedData,
@@ -291,7 +278,7 @@ fun BreedListItem(
                     horizontalArrangement = Arrangement.End,
                 ) {
                     Text(text = "Alternative names: ", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
-                    if(data.altNames.equals("")) Text(text = "/", fontSize = 15.sp)
+                    if(data.altNames == "") Text(text = "/", fontSize = 15.sp)
                     else Text(text = data.altNames)
                 }
 
@@ -315,7 +302,7 @@ fun BreedListItem(
                     }
                     IconButton(onClick = {onClick()}) {
                         Icon(
-                            imageVector = Icons.Default.KeyboardArrowRight,
+                            imageVector = Icons.AutoMirrored.Filled.KeyboardArrowRight,
                             contentDescription = null
                         )
                     }
