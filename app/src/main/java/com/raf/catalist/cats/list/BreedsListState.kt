@@ -1,11 +1,13 @@
 package com.raf.catalist.cats.list
 
+import com.raf.catalist.cats.api.model.BreedApiModel
 import com.raf.catalist.cats.domain.BreedData
+import com.raf.catalist.cats.list.model.BreedUiModel
 
 data class BreedsListState(
-     val loading: Boolean = false,
-     val breeds : List<BreedData> = emptyList(),
-     val error: ListError? = null
+    val loading: Boolean = false,
+    val breeds: List<BreedUiModel> = emptyList(),
+    val error: ListError? = null
 ){
 
 //     Class with a closed set of subclasses. Define a restricted class hierarchy in which

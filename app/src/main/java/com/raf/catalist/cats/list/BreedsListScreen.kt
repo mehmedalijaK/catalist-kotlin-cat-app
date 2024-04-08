@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import coil.compose.SubcomposeAsyncImage
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,6 +14,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -30,12 +35,13 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -46,8 +52,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import coil.compose.SubcomposeAsyncImage
 import com.raf.catalist.R
 import com.raf.catalist.cats.domain.BreedData
+import com.raf.catalist.cats.list.model.BreedUiModel
 import com.raf.catalist.core.compose.NoDataMessage
 import com.raf.catalist.core.compose.SearchBarM3
 
@@ -80,7 +88,7 @@ fun NavGraphBuilder.breedsListScreen(
 fun BreedsListScreen(
     state: BreedsListState,
     eventPublisher: (BreedListUiEvent) -> Unit,
-    onItemClick: (BreedData) -> Unit
+    onItemClick: (BreedUiModel) -> Unit
 ) {
     Scaffold (
         topBar = {
@@ -88,7 +96,7 @@ fun BreedsListScreen(
                  title = { Text(text = LocalContext.current.getString(R.string.app_name)) },
                  colors = TopAppBarDefaults.topAppBarColors(
                      containerColor = MaterialTheme.colorScheme.primary,
-                     titleContentColor = MaterialTheme.colorScheme.tertiary
+                     titleContentColor = Color.White
                  )
              )
         },
@@ -127,12 +135,13 @@ fun BreedsListScreen(
 @Composable
 fun BreedsList(
     paddingValues: PaddingValues,
-    items: List<BreedData>,
-    onItemClick: (BreedData) -> Unit,
+    items: List<BreedUiModel>,
+    onItemClick: (BreedUiModel) -> Unit,
     eventPublisher: (BreedListUiEvent) -> Unit
 ){
 
-    val scrollState = rememberScrollState()
+    val scrollState = rememberLazyListState()
+
     Column (
         modifier = Modifier.padding(paddingValues),
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -143,23 +152,36 @@ fun BreedsList(
         if(items.isEmpty()){
             NoDataMessage()
         }else{
-            Column(
-                modifier = Modifier
-                    .verticalScroll(scrollState)
-                    .fillMaxSize(),
-            ){
-                items.forEach {
-                    Column {
-                        key(it.id) {
-                            BreedListItem(
-                                data = it,
-                                onClick = {
-                                    onItemClick(it)
-                                },
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(16.dp))
-                    }
+//            Column(
+//                modifier = Modifier
+//                    .verticalScroll(scrollState)
+//                    .fillMaxSize(),
+//            ){
+//                items.forEach {
+//                    Column {
+//                        key(it.id) {
+//                            BreedListItem(
+//                                data = it,
+//                                onClick = {
+//                                    onItemClick(it)
+//                                },
+//                            )
+//                        }
+//                        Spacer(modifier = Modifier.height(16.dp))
+//                    }
+//                }
+//            }
+
+            LazyColumn(
+                modifier = Modifier.fillMaxSize(),
+                state = scrollState
+            ) {
+                items(items) { item ->
+                    BreedListItem(
+                        data = item,
+                        onClick = { onItemClick(item) },
+                    )
+                    Spacer(modifier = Modifier.height(16.dp))
                 }
             }
         }
@@ -168,7 +190,7 @@ fun BreedsList(
 
 @Composable
 fun BreedListItem(
-    data: BreedData,
+    data: BreedUiModel,
     onClick: () -> Unit,
 ) {
     Card(
@@ -181,12 +203,22 @@ fun BreedListItem(
         Column(
             modifier = Modifier.fillMaxSize()
         ){
-            Image(
-                painter = painterResource(id = R.drawable.cat),
+            SubcomposeAsyncImage(
                 contentDescription = "cat.desc",
                 modifier = Modifier
                     .height(150.dp),
-                contentScale = androidx.compose.ui.layout.ContentScale.Crop // Crop the image to fit
+                model = data.image?.url,
+                contentScale = ContentScale.Crop, // Crop the image to fit
+                loading = {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(36.dp),
+                        )
+                    }
+                },
             )
             Column (
                 modifier = Modifier.padding(10.dp)
@@ -194,15 +226,13 @@ fun BreedListItem(
                 Text(text = data.name,
                     fontWeight = FontWeight.Bold,
                     fontSize = 21.sp,)
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End,
-                ) {
-                    Text(text = "Alternative names: ", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
-                    if(data.altNames == "") Text(text = "/", fontSize = 15.sp)
-                    else Text(text = data.altNames)
+                if(data.altNames != ""){
+                    Column( modifier = Modifier.padding(vertical = 5.dp)
+                    ) {
+                        Text(text = "Alternative names: ", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+                        Text(text = data.altNames, fontSize = 15.sp)
+                    }
                 }
-
                 Text(
                     modifier = Modifier.padding(vertical = 15.dp),
                     text = data.description.take(250), // Take the first 250 characters

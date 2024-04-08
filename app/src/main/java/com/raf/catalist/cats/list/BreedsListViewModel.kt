@@ -2,6 +2,8 @@ package com.raf.catalist.cats.list
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.raf.catalist.cats.api.model.BreedApiModel
+import com.raf.catalist.cats.list.model.BreedUiModel
 import com.raf.catalist.cats.repository.BreedsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -71,8 +73,9 @@ class BreedsListViewModel constructor(
             setState { copy(loading = true) }
             try {
                 withContext(Dispatchers.IO) {
-                    repository.fetchBreeds()
+                    repository.getBreeds()
                 }
+//                setState { copy(breeds = breeds.map { it.asBreedUiModel() }) }
             } catch (error: IOException) {
                 setState { copy(error = BreedsListState.ListError.LoadingListFailed(cause = error)) }
             } finally {

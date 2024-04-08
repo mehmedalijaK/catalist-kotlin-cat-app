@@ -4,11 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
-import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.hoverable
+import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -21,68 +17,51 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowForward
-import androidx.compose.material.icons.filled.Call
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardColors
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilterChip
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.ShapeDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.key
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.core.content.ContextCompat.startActivity
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
-import androidx.navigation.NavBackStackEntry
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
+import coil.compose.SubcomposeAsyncImage
 import com.raf.catalist.R
-import com.raf.catalist.cats.domain.BreedData
-import com.raf.catalist.cats.list.BreedListItem
-import com.raf.catalist.cats.list.BreedsList
-import com.raf.catalist.cats.list.BreedsListState
-import java.util.concurrent.Flow
-
+import com.raf.catalist.cats.list.model.BreedUiModel
 
 fun NavGraphBuilder.breedDetails(
     route: String,
@@ -125,7 +104,7 @@ fun BreedDetailScreen(
                 title = { state.data?.let { Text(text = it.name) } },
                 colors = TopAppBarDefaults.topAppBarColors(
                     containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.tertiary
+                    titleContentColor = Color.White
                 ),
                 navigationIcon = {
                     IconButton(
@@ -170,7 +149,7 @@ fun BreedDetailScreen(
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BreedCard(
-    data: BreedData,
+    data: BreedUiModel,
     paddingValues: PaddingValues,
 ){
     val scrollState = rememberScrollState()
@@ -184,12 +163,22 @@ fun BreedCard(
         Column(
             modifier = Modifier.fillMaxSize()
         ){
-            Image(
-                painter = painterResource(id = R.drawable.cat),
+            SubcomposeAsyncImage(
                 contentDescription = "cat.desc",
+                model = data.image?.url,
                 modifier = Modifier
-                    .height(220.dp),
-                contentScale = ContentScale.Crop // Crop the image to fit
+                    .height(280.dp),
+                contentScale = ContentScale.Crop, // Crop the image to fit
+                loading = {
+                    Box(
+                        modifier = Modifier.fillMaxSize(),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        CircularProgressIndicator(
+                            modifier = Modifier.size(36.dp),
+                        )
+                    }
+                },
             )
             Column (
                 modifier = Modifier.padding(vertical = 15.dp, horizontal = 25.dp)
@@ -218,17 +207,16 @@ fun BreedCard(
                     }
 
                 }
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.End,
-                ) {
-                    Text(text = "Alternative names: ", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
-                    if(data.altNames.equals("")) Text(text = "/", fontSize = 15.sp)
-                    else Text(text = data.altNames)
+                if(data.altNames != ""){
+                    Column( modifier = Modifier.padding(top = 9.dp)
+                    ) {
+                        Text(text = "Alternative names: ", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+                        Text(text = data.altNames, fontSize = 15.sp)
+                    }
                 }
 
                 Text(
-                    modifier = Modifier.padding(bottom = 15.dp),
+                    modifier = Modifier.padding(vertical = 15.dp),
                     text = data.description,
                     overflow = TextOverflow.Ellipsis, // Add ellipsis (...) if the text overflows
                     fontSize = 15.sp
@@ -244,7 +232,7 @@ fun BreedCard(
                             label = { Text(text = temp, fontSize = 12.sp) },
                             colors = AssistChipDefaults.assistChipColors(
                                 containerColor = MaterialTheme.colorScheme.primary,
-                                labelColor = MaterialTheme.colorScheme.tertiary
+                                labelColor = Color.White
                             ),
                         )
                     }
@@ -296,13 +284,11 @@ fun BreedCard(
                     modifier = Modifier.padding(top = 2.dp)
                 ) {
                     for (dataPoint in listOf(
-                        Pair("Adaptability", data.adaptability),
                         Pair("Affection level", data.affectionLevel),
                         Pair("Child friendly", data.childFriendly),
                         Pair("Dog friendly", data.dogFriendly),
                         Pair("Energy level", data.energyLevel),
-                        Pair("Stranger friendly", data.strangerFriendly),
-                        Pair("Intelligence", data.intelligence)
+                        Pair("Shedding level", data.sheddingLevel),
                     )) {
                         Widget(label = dataPoint.first, repeatValue = dataPoint.second)
                     }
@@ -313,10 +299,14 @@ fun BreedCard(
                     val intent = Intent(Intent.ACTION_VIEW, Uri.parse(data.wikipediaUrl))
                         ctx.startActivity(intent)
                 }, modifier = Modifier.fillMaxWidth(),
-                    contentPadding = PaddingValues(16.dp)
+                    contentPadding = PaddingValues(16.dp),
+
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text("Visit website")
+                        Text(
+                            text = "Visit website",
+                            color = Color.White
+                        )
                         Icon(
                             painter = painterResource(R.drawable.baseline_arrow_forward_ios_24),
                             contentDescription = "Arrow forward",
@@ -331,18 +321,28 @@ fun BreedCard(
     }
 }
 
-@OptIn(ExperimentalLayoutApi::class)
 @Composable
 private fun Widget(
     label: String,
     repeatValue: Int
 ) {
+
+    val containerColor = if (isSystemInDarkTheme()) {
+        Color(0xFF121212) // Dark theme color
+    } else {
+        Color(0xFFF5F5F5) // Light theme color
+    }
+
+    val cardColors = CardDefaults.cardColors(
+        containerColor = containerColor
+    )
+
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RectangleShape,
-        colors = CardDefaults.cardColors(
-            containerColor = Color(0xfff5f5f5)
-        ),
+        colors = cardColors,
+
     ) {
         Column(
             modifier = Modifier
