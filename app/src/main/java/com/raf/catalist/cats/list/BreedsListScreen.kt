@@ -1,10 +1,6 @@
 package com.raf.catalist.cats.list
 
 import android.util.Log
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.animateDp
-import androidx.compose.animation.core.tween
-import androidx.compose.animation.core.updateTransition
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,8 +17,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -30,20 +24,16 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.ListItem
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
@@ -59,6 +49,7 @@ import androidx.navigation.compose.composable
 import com.raf.catalist.R
 import com.raf.catalist.cats.domain.BreedData
 import com.raf.catalist.core.compose.NoDataMessage
+import com.raf.catalist.core.compose.SearchBarM3
 
 @ExperimentalMaterial3Api
 fun NavGraphBuilder.breedsListScreen(
@@ -171,76 +162,6 @@ fun BreedsList(
                     }
                 }
             }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun SearchBarM3(
-    eventPublisher: (BreedListUiEvent) -> Unit,
-){
-
-    var query by remember { mutableStateOf("") }
-    var active by remember { mutableStateOf(false) }
-
-    val searchHistory = listOf("Abyssinian", "Aegean", "American Bobtail","Abyssinian", "Aegean", "American Bobtail","Abyssinian", "Aegean", "American Bobtail","Abyssinian", "Aegean", "American Bobtail")
-
-    val transition = updateTransition(targetState = active, label = "")
-    val width by transition.animateDp(
-        transitionSpec = {
-            if (false isTransitioningTo true) {
-                tween(durationMillis = 300, easing = LinearEasing)
-            } else {
-                tween(durationMillis = 300, easing = LinearEasing)
-            }
-        }, label = ""
-    ) { state ->
-        if (state) 0.dp else 16.dp
-    }
-
-    SearchBar(
-        modifier = if (active) Modifier.fillMaxWidth() else Modifier.fillMaxWidth().padding(horizontal = width),
-        query = query,
-        onQueryChange = {query = it},
-        onSearch = {newQuery ->
-                   eventPublisher(BreedListUiEvent.RequestDataFilter(newQuery))
-                    active = false
-        },
-        active = active,
-        onActiveChange = {
-            active = it
-        },
-        placeholder = { Text(text = "Search cats")},
-        leadingIcon = {
-            Icon(imageVector = Icons.Filled.Search, contentDescription = "search")
-        },
-        trailingIcon = {
-            Row {
-                IconButton(onClick = { }) {
-                    Icon(painter = painterResource(id = R.drawable.baseline_mic_24), contentDescription = "Microphone")
-                }
-                if (active){
-                    IconButton(onClick = { if (query.isNotEmpty()) query = "" else active = false}) {
-                        Icon(imageVector = Icons.Filled.Close, contentDescription = "Close")
-                    }
-                }
-            }
-        },
-    ) {
-        searchHistory.takeLast(3).forEach { item ->
-            ListItem(
-                modifier = Modifier
-                    .clickable { query = item }
-                   ,
-                headlineContent = {Text(text = item)},
-                leadingContent = {
-                    Icon(
-                        painter = painterResource(R.drawable.baseline_history_24),
-                        contentDescription = "History"
-                    )
-                }
-            )
         }
     }
 }

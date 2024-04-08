@@ -81,7 +81,6 @@ import com.raf.catalist.cats.domain.BreedData
 import com.raf.catalist.cats.list.BreedListItem
 import com.raf.catalist.cats.list.BreedsList
 import com.raf.catalist.cats.list.BreedsListState
-import com.raf.catalist.cats.list.SearchBarM3
 import java.util.concurrent.Flow
 
 
