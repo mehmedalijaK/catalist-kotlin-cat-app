@@ -1,5 +1,6 @@
 package com.raf.catalist.cats.list
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.raf.catalist.cats.api.model.BreedApiModel
@@ -56,6 +57,7 @@ class BreedsListViewModel constructor(
                 when (it) {
                     is BreedListUiEvent.RequestDataFilter -> {
                         filterData(catName = it.catName)
+                        setState { copy(query = it.catName)}
                     }
                 }
             }

@@ -24,8 +24,8 @@ object BreedsRepository {
     private var breedsCached: List<BreedApiModel> = emptyList();
 
     suspend fun getBreeds() {
-        breedsCached = breedsApi.getAllBreeds()
-        breeds.update { breedsCached.map { it.asBreedUiModel() } }
+        breedsCached = breedsApi.getAllBreeds() // We will fetch all breeds and have them locally cached.
+        breeds.update { breedsCached.map { it.asBreedUiModel() } } // Observer from BreedsListViewModel will trigger on this
     }
 
 
@@ -46,7 +46,7 @@ object BreedsRepository {
         delay(1.seconds)
     }
 
-    fun observeBreeds(): Flow<List<BreedUiModel>> = breeds.asStateFlow()
+    fun observeBreeds(): Flow<List<BreedUiModel>> = breeds.asStateFlow() // With this ViewModel can observe
     fun observeBreedDetails(breedId: String): Flow<BreedUiModel?> {
         return observeBreeds()
             .map { breeds -> breeds.find { it.id == breedId } }

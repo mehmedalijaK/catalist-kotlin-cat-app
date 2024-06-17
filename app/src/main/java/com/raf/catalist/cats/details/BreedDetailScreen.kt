@@ -86,7 +86,7 @@ fun NavGraphBuilder.breedDetails(
     BreedDetailScreen(
         state = state.value,
         onClick = {
-            navController.navigate(route = "home")
+            navController.popBackStack()
         }
     )
 }
@@ -145,7 +145,6 @@ fun BreedDetailScreen(
 }
 
 
-@SuppressLint("SuspiciousIndentation")
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
 fun BreedCard(

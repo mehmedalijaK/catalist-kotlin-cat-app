@@ -38,6 +38,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -69,7 +72,7 @@ fun NavGraphBuilder.breedsListScreen(
 
 //  Will create mutableState, so we do not have to create coroutines
     val state by breedsListViewModel.state.collectAsState()
-
+    Log.d("Assist chip", state.query) // TODO: set query
     BreedsListScreen(
         state = state,
         eventPublisher = {
@@ -100,8 +103,8 @@ fun BreedsListScreen(
                  )
              )
         },
-        content = {
 
+        content = {
             if(state.loading){
                 Box(
                     modifier = Modifier.fillMaxSize(),
@@ -152,26 +155,6 @@ fun BreedsList(
         if(items.isEmpty()){
             NoDataMessage()
         }else{
-//            Column(
-//                modifier = Modifier
-//                    .verticalScroll(scrollState)
-//                    .fillMaxSize(),
-//            ){
-//                items.forEach {
-//                    Column {
-//                        key(it.id) {
-//                            BreedListItem(
-//                                data = it,
-//                                onClick = {
-//                                    onItemClick(it)
-//                                },
-//                            )
-//                        }
-//                        Spacer(modifier = Modifier.height(16.dp))
-//                    }
-//                }
-//            }
-
             LazyColumn(
                 modifier = Modifier.fillMaxSize(),
                 state = scrollState

@@ -7,7 +7,8 @@ import com.raf.catalist.cats.list.model.BreedUiModel
 data class BreedsListState(
     val loading: Boolean = false,
     val breeds: List<BreedUiModel> = emptyList(),
-    val error: ListError? = null
+    val error: ListError? = null,
+    val query: String = ""
 ){
 
 //     Class with a closed set of subclasses. Define a restricted class hierarchy in which

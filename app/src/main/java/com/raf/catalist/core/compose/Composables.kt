@@ -56,7 +56,7 @@ fun NoDataMessage() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchBarM3(
-    eventPublisher: (BreedListUiEvent) -> Unit
+    eventPublisher: (BreedListUiEvent) -> Unit,
 ){
 
     var query by remember { mutableStateOf("") }
