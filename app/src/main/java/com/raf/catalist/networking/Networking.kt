@@ -7,16 +7,24 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
+import io.github.cdimascio.dotenv.dotenv
+
 
 /*
  * Order of okhttp interceptors is important. If logging was first,
  * it would not log the custom header.
  */
 
+
+val dotenv = dotenv {
+    directory = "/assets"
+    filename = "env" // instead of '.env', use 'env'
+}
+
 val okHttpClient = OkHttpClient.Builder()
     .addInterceptor {
         val updatedRequest = it.request().newBuilder()
-            .addHeader("x-api-key", "")
+            .addHeader("x-api-key", dotenv["API_KEY"])
             .build()
         it.proceed(updatedRequest)
     }
