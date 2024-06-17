@@ -243,7 +243,7 @@ fun BreedCard(
                     HorizontalDivider()
                     ListItem(
                         headlineContent = {Text("Origin country")},
-                        supportingContent = { Text("Secondary text") },
+                        supportingContent = { Text("Roots and Heritage") },
                         trailingContent = { Text(data.origin) },
                         leadingContent = {
                             Icon(
@@ -255,7 +255,7 @@ fun BreedCard(
                     HorizontalDivider()
                     ListItem(
                         headlineContent = {Text("Life span")},
-                        supportingContent = { Text("Secondary text") },
+                        supportingContent = { Text("Birth to Legacy") },
                         trailingContent = { Text(data.lifeSpan + " years") },
                         leadingContent = {
                             Icon(
@@ -267,7 +267,7 @@ fun BreedCard(
                     HorizontalDivider()
                     ListItem(
                         headlineContent = {Text("Weight")},
-                        supportingContent = { Text("Secondary text") },
+                        supportingContent = { Text("I love Whiskas") },
                         trailingContent = { Text(data.weight.metric + " kg") },
                         leadingContent = {
                             Icon(
