@@ -128,7 +128,8 @@ fun BreedsListScreen(
                     paddingValues = it,
                     items = state.breeds,
                     onItemClick = onItemClick,
-                    eventPublisher = eventPublisher
+                    eventPublisher = eventPublisher,
+                    query = state.query
                 )
             }
         }
@@ -140,7 +141,8 @@ fun BreedsList(
     paddingValues: PaddingValues,
     items: List<BreedUiModel>,
     onItemClick: (BreedUiModel) -> Unit,
-    eventPublisher: (BreedListUiEvent) -> Unit
+    eventPublisher: (BreedListUiEvent) -> Unit,
+    query : String = ""
 ){
 
     val scrollState = rememberLazyListState()
@@ -150,7 +152,7 @@ fun BreedsList(
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Top,
     ){
-        SearchBarM3(eventPublisher = eventPublisher)
+        SearchBarM3(eventPublisher = eventPublisher, initQuery = query)
         Spacer(modifier = Modifier.height(10.dp))
         if(items.isEmpty()){
             NoDataMessage()

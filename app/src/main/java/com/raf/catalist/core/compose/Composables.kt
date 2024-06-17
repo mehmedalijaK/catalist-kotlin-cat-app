@@ -57,9 +57,10 @@ fun NoDataMessage() {
 @Composable
 fun SearchBarM3(
     eventPublisher: (BreedListUiEvent) -> Unit,
+    initQuery: String = ""
 ){
 
-    var query by remember { mutableStateOf("") }
+    var query by remember { mutableStateOf(initQuery) }
     var active by remember { mutableStateOf(false) }
     var searchHistory = remember { mutableStateListOf<String>() }
 
