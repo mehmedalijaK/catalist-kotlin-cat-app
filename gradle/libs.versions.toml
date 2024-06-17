@@ -1,6 +1,8 @@
 [versions]
+accompanistPager = "0.22.0"
 agp = "8.3.0"
 dotenvKotlin = "6.4.1"
+gestureViews = "2.8.3"
 kotlin = "1.9.23"
 coreKtx = "1.10.1"
 junit = "4.13.2"
@@ -10,10 +12,14 @@ lifecycleRuntimeKtx = "2.6.1"
 activityCompose = "1.7.0"
 composeBom = "2023.08.00"
 material3Android = "1.2.1"
+zoomable = "<version>"
+zoomlayout = "1.9.0"
 
 [libraries]
+accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 dotenv-kotlin = { module = "io.github.cdimascio:dotenv-kotlin", version.ref = "dotenvKotlin" }
+gesture-views = { module = "com.alexvasilkov:gesture-views", version.ref = "gestureViews" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
 androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
@@ -28,6 +34,8 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
+zoomable = { module = "com.mxalbert.zoomable:zoomable", version.ref = "zoomable" }
+zoomlayout = { module = "com.visualstudio:zoomlayout", version.ref = "zoomlayout" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

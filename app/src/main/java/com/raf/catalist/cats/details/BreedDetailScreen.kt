@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.net.Uri
 import android.util.Log
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -87,6 +88,9 @@ fun NavGraphBuilder.breedDetails(
         state = state.value,
         onClick = {
             navController.popBackStack()
+        },
+        onVisitAlbum = {
+            navController.navigate(route = "album/${dataId}")
         }
     )
 }
@@ -96,7 +100,8 @@ fun NavGraphBuilder.breedDetails(
 @Composable
 fun BreedDetailScreen(
     state: BreedDetailsState,
-    onClick: () -> Unit
+    onClick: () -> Unit,
+    onVisitAlbum: () -> Unit
 ){
     Scaffold (
         topBar = {
@@ -138,7 +143,7 @@ fun BreedDetailScreen(
                     Text(text = errorMessage)
                 }
             }else{
-                state.data?.let { it1 -> BreedCard(it1, it) }
+                state.data?.let { it1 -> BreedCard(it1, it, onVisitAlbum) }
             }
         }
     )
@@ -150,6 +155,7 @@ fun BreedDetailScreen(
 fun BreedCard(
     data: BreedUiModel,
     paddingValues: PaddingValues,
+    onVisitAlbum: () -> Unit
 ){
     val scrollState = rememberScrollState()
     Column (
@@ -166,7 +172,7 @@ fun BreedCard(
                 contentDescription = "cat.desc",
                 model = data.image?.url,
                 modifier = Modifier
-                    .height(280.dp),
+                    .height(280.dp).clickable { onVisitAlbum() },
                 contentScale = ContentScale.Crop, // Crop the image to fit
                 loading = {
                     Box(
@@ -304,6 +310,27 @@ fun BreedCard(
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Text(
                             text = "Visit website",
+                            color = Color.White
+                        )
+                        Icon(
+                            painter = painterResource(R.drawable.baseline_arrow_forward_ios_24),
+                            contentDescription = "Arrow forward",
+                            modifier = Modifier.padding(start = 4.dp),
+                            tint = Color(0xFFFFFFFF)
+                        )
+                    }
+                }
+
+                Button(
+                    onClick = {
+                        onVisitAlbum()
+                    }, modifier = Modifier.fillMaxWidth().padding(top = 7.dp),
+                    contentPadding = PaddingValues(16.dp),
+
+                    ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "Check album",
                             color = Color.White
                         )
                         Icon(

@@ -3,6 +3,7 @@ package com.raf.catalist.cats.repository
 import com.raf.catalist.cats.api.BreedsApi
 import com.raf.catalist.cats.api.model.BreedApiModel
 import com.raf.catalist.cats.api.model.Image
+import com.raf.catalist.cats.api.model.ImageApiModel
 import com.raf.catalist.cats.api.model.Weight
 import com.raf.catalist.cats.domain.BreedData
 import com.raf.catalist.cats.list.model.BreedUiModel
@@ -28,6 +29,9 @@ object BreedsRepository {
         breeds.update { breedsCached.map { it.asBreedUiModel() } } // Observer from BreedsListViewModel will trigger on this
     }
 
+    suspend fun getImages(breedId: String) : List<ImageApiModel> {
+        return breedsApi.getBengalImages(limit = 10, breedIds = breedId)
+    }
 
 //    fun allBreeds(): List<BreedData> = breeds.value
 

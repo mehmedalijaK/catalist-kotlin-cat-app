@@ -62,6 +62,9 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.dotenv.kotlin)
+    implementation("com.mxalbert.zoomable:zoomable:1.6.1")
+
+
 //    implementation(libs.androidx.material3)
     implementation(libs.androidx.material3.android)
     testImplementation(libs.junit)
