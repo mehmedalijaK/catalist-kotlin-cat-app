@@ -41,6 +41,9 @@ import androidx.compose.ui.text.style.TextAlign
 
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.raf.catalist.cats.list.BreedListUiEvent
+import com.raf.catalist.db.user.User
 import com.skydoves.cloudy.Cloudy
 
 
@@ -49,12 +52,34 @@ fun NavGraphBuilder.user(
     route: String,
     navController: NavController
 ) = composable(route = route){
-    LoginScreen()
+
+    val userViewModel: UserViewModel = hiltViewModel()
+
+    val state = userViewModel.state.collectAsState()
+
+    if(state.value.loading){
+        Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
+        ){
+            CircularProgressIndicator()
+        }
+    }else {
+        if(state.value.user == null)
+            LoginScreen(eventPublisher = {
+                userViewModel.publishEvent(it)
+            },)
+        else navController.navigate("home")
+    }
+
+
 }
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
-fun LoginScreen() {
+fun LoginScreen(
+    eventPublisher: (UserUiEvent) -> Unit,
+) {
     var name by remember { mutableStateOf(TextFieldValue("")) }
     var lastName by remember { mutableStateOf(TextFieldValue("")) }
     var username by remember { mutableStateOf(TextFieldValue("")) }
@@ -101,7 +126,6 @@ fun LoginScreen() {
                         .background(Color.Black.copy(alpha = 0.5f)) // Semi-transparent black overlay
                 )
 
-                // Foreground content
                 Column(
                     modifier = Modifier
                         .fillMaxSize()
@@ -114,14 +138,14 @@ fun LoginScreen() {
                         fontWeight = FontWeight.Bold,
                         fontSize = 24.sp,
                         textAlign = TextAlign.Center,
-                        color = Color.White // Text color for better contrast
+                        color = Color.White
                     )
                     Text(
                         text = "Please enter your information to continue.",
                         fontWeight = FontWeight.Bold,
                         fontSize = 11.sp,
                         textAlign = TextAlign.Center,
-                        color = Color.White // Text color for better contrast
+                        color = Color.White
                     )
                     Spacer(modifier = Modifier.height(16.dp))
 
@@ -157,7 +181,12 @@ fun LoginScreen() {
                     Button(
                         onClick = {
                             if (validate()) {
-                                // Handle Sign In
+                                eventPublisher(UserUiEvent.CreateUser(
+                                    firstName = name.text,
+                                    lastName = lastName.text,
+                                    mail = email.text,
+                                    username = username.text
+                                ))
                             }
                         },
                         modifier = Modifier
@@ -193,10 +222,8 @@ fun CustomTextField(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(bottom = 8.dp)
-//                .background(color = Color.Red)
             ,
             singleLine = true,
-//            shape = RoundedCornerShape(0),
             colors = TextFieldDefaults.colors(
                 unfocusedContainerColor = Color.Transparent,
                 focusedContainerColor = Color.Black.copy(alpha = 0.3f),
@@ -215,8 +242,8 @@ fun CustomTextField(
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun LoginScreenPreview() {
-    LoginScreen()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun LoginScreenPreview() {
+//    LoginScreen()
+//}

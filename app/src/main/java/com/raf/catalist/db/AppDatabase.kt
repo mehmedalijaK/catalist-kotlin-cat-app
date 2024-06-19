@@ -5,6 +5,7 @@ import androidx.room.RoomDatabase
 import com.raf.catalist.db.breed.Breed
 import com.raf.catalist.db.breed.BreedDao
 import com.raf.catalist.db.user.User
+import com.raf.catalist.db.user.UserDao
 
 @Database(
     entities = [
@@ -16,4 +17,5 @@ import com.raf.catalist.db.user.User
 )
 abstract class AppDatabase : RoomDatabase() {
     abstract fun breedDao(): BreedDao
+    abstract fun userDao() : UserDao
 }

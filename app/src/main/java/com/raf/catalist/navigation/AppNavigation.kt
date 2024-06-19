@@ -21,9 +21,14 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "home"
+        startDestination = "login"
     ){
         user(
+            route = "login",
+            navController = navController
+        )
+
+        breedsListScreen(
             route = "home",
             navController = navController
         )

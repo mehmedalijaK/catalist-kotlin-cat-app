@@ -17,5 +17,8 @@ interface UserDao {
     fun updateUser(vararg user: User)
 
     @Query("SELECT * FROM user LIMIT 1")
-    fun getUser() : Flow<User>
+    fun observeUser() : Flow<User>
+
+    @Query("SELECT * FROM user LIMIT 1")
+    fun getUser() : User
 }

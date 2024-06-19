@@ -29,6 +29,7 @@ class BreedsListViewModel constructor(
 
 //  publishEvent is exposed
     private val events = MutableSharedFlow<BreedListUiEvent>()
+
     fun publishEvent(event:BreedListUiEvent) {
         viewModelScope.launch {
             events.emit(event)
