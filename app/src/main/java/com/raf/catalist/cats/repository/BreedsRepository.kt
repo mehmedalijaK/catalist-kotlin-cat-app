@@ -65,17 +65,14 @@ class BreedsRepository @Inject constructor(
 //        breeds.update{ SampleData.toMutableList() }
 //    }
 
-    suspend fun fetchBreedDetails(breedId: String) {
-        delay(1.seconds)
+    suspend fun fetchBreedDetails(breedId: String) : BreedUiModel? {
+        val breed = database.breedDao().getBreed(breedId)
+        return breed.asBreedUiModel()
     }
 
     fun observeBreedsFlow() = database.breedDao().observeBreeds() // With this ViewModel can observe
     fun observeBreeds(): Flow<List<BreedUiModel>> = breeds.asStateFlow()
-//    fun observeBreedDetails(breedId: String): Flow<BreedUiModel?> {
-//        return observeBreeds()
-//            .map { breeds -> breeds.find { it.id == breedId } }
-//            .distinctUntilChanged()
-//    }
+    fun observeBreedFlow(breedId: String) = database.breedDao().getBreedFlow(breedId)
 
     fun filterData(catName: String){
         breeds.update {

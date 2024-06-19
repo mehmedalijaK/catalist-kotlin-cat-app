@@ -81,6 +81,7 @@ fun NavGraphBuilder.breedsListScreen(
             breedsListViewModel.publishEvent(it)
         },
         onItemClick = {
+            Log.d("asdads", it.id)
             navController.navigate(route = "breeds/${it.id}")
         }
     )

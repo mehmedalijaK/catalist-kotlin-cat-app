@@ -34,12 +34,12 @@ fun AppNavigation() {
         )
 
         breedDetails(
-            route = "breeds/{id}",
+            route = "breeds/{breedId}",
             navController = navController
         )
 
         catAlbumGrid(
-            route = "album/{id}",
+            route = "album/{breedId}",
             arguments = listOf(
                 navArgument(name = "id"){
                     nullable = false

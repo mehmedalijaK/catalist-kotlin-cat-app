@@ -3,11 +3,14 @@ package com.raf.catalist.cats.details
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.raf.catalist.cats.list.model.BreedUiModel
 import com.raf.catalist.cats.repository.BreedsRepository
+import com.raf.catalist.db.breed.Breed
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.launch
@@ -30,26 +33,29 @@ class BreedDetailsViewModel @Inject constructor(
 
 
     init{
-//        observeBreedDetails()
+        observeBreedDetails()
         fetchBreedDetails()
     }
 
-//    private fun observeBreedDetails() {
-//        viewModelScope.launch {
-//            repository.observeBreedDetails(breedId = breedId)
-//                .filterNotNull()
-//                .collect {
-//                    setState { copy(data = it) }
-//                }
-//        }
-//    }
+    private fun observeBreedDetails() {
+        viewModelScope.launch {
+            // Which will observe all changes to our passwords
+            withContext(Dispatchers.IO){
+                repository.observeBreedFlow(breedId).distinctUntilChanged().collect {
+                    setState { copy(data = it.asBreedUiModel()) }
+                }
+            }
+
+        }
+    }
 
     private fun fetchBreedDetails() {
         viewModelScope.launch {
             setState { copy(loading = true) }
             try {
                 withContext(Dispatchers.IO) {
-                    repository.fetchBreedDetails(breedId = breedId)
+                    val breed = repository.fetchBreedDetails(breedId = breedId)
+                    setState { copy(data = breed) }
                 }
             } catch (error: IOException) {
                 setState {
@@ -60,6 +66,26 @@ class BreedDetailsViewModel @Inject constructor(
             }
         }
     }
+
+    private fun Breed.asBreedUiModel() = BreedUiModel(
+        id = this.id,
+        name = this.name,
+        altNames = this.altNames,
+        origin = this.origin,
+        wikipediaUrl = this.wikipediaUrl,
+        description = this.description,
+        temperament = this.temperament,
+        lifeSpan = this.lifeSpan,
+        weight = this.weight,
+        rare = this.rare,
+        affectionLevel = this.affectionLevel,
+        dogFriendly = this.dogFriendly,
+        energyLevel = this.energyLevel,
+        sheddingLevel = this.sheddingLevel,
+        childFriendly = this.childFriendly,
+        image = this.imageId?.let { repository.getImage(it) }
+    )
+
 }
 
 

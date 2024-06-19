@@ -73,19 +73,6 @@ fun NavGraphBuilder.breedDetails(
 ) {navBackStackEntry ->
 
     val breedDetailsViewModel = hiltViewModel<BreedDetailsViewModel>(navBackStackEntry)
-
-//    val dataId = navBackStackEntry.arguments?.getString("id")
-//        ?: throw IllegalArgumentException("id is required.")
-//
-//    val breedDetailsViewModel = viewModel<BreedDetailsViewModel>(
-//        factory = object : ViewModelProvider.Factory {
-//            @Suppress("UNCHECKED_CAST")
-//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-//                return BreedDetailsViewModel(breedId = dataId) as T
-//            }
-//        },
-//    )
-
     val state = breedDetailsViewModel.state.collectAsState()
 
     BreedDetailScreen(
@@ -94,6 +81,7 @@ fun NavGraphBuilder.breedDetails(
             navController.popBackStack()
         },
         onVisitAlbum = {
+            Log.d("sasdasd", state.value.breedId)
             navController.navigate(route = "album/${state.value.breedId}")
         }
     )
