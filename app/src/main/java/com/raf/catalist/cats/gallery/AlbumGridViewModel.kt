@@ -11,6 +11,7 @@ import com.raf.catalist.cats.repository.BreedsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -29,17 +30,28 @@ class AlbumGalleryViewModel @Inject constructor(
 
     init {
         fetchAlbums()
+//        observeImageFlow()
     }
+
+//    private fun observeImageFlow() {
+//        viewModelScope.launch {
+//            // Which will observe all changes to our passwords
+//            withContext(Dispatchers.IO){
+//                repository.observeBreedsFlow().distinctUntilChanged().collect {
+//                    setState { copy(breeds = it.map {it.asBreedUiModel()}) }
+//                }
+//            }
+//
+//        }
+//    }
 
     private fun fetchAlbums() {
         viewModelScope.launch {
             setState { copy(loading = true) }
             try {
-                val albums = withContext(Dispatchers.IO) {
+                withContext(Dispatchers.IO) {
                     repository.getImages(breedId = breedId)
                 }
-                setState { copy(albums = albums.map { it.asAlbumUiModel() }) }
-
             } catch (error: Exception) {
                 // TODO Handle error
             }

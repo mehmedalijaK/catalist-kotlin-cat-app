@@ -17,6 +17,9 @@ interface BreedDao{
     fun insertAll(list: List<Breed>)
 
     @Upsert
+    fun insertAllImages(list: List<Image>)
+
+    @Upsert
     fun upsertAllBreeds(list: List<Breed>)
 
     @Upsert
@@ -33,6 +36,9 @@ interface BreedDao{
 
     @Query("SELECT * FROM Breed WHERE Breed.id = :breedId")
     fun getBreedFlow(breedId: String): Flow<Breed>
+
+    @Query("SELECT * FROM Image WHERE breedId = :breedId")
+    fun getImageFlow(breedId: String): Flow<List<Image>>
 
     @Query("SELECT * FROM Breed")
     fun observeBreeds() : Flow<List<Breed>>

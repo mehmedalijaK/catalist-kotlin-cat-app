@@ -41,7 +41,7 @@ fun AppNavigation() {
         catAlbumGrid(
             route = "album/{breedId}",
             arguments = listOf(
-                navArgument(name = "id"){
+                navArgument(name = "breedId"){
                     nullable = false
                     type = NavType.StringType
                 }
@@ -55,9 +55,9 @@ fun AppNavigation() {
         )
 
         albumGallery(
-            route = "albums/{id}",
+            route = "albums/{breedId}",
             arguments = listOf(
-                navArgument(name = "id"){
+                navArgument(name = "breedId"){
                     nullable = false
                     type = NavType.StringType
                 }

@@ -55,7 +55,7 @@ fun NavGraphBuilder.catAlbumGrid(
     val albumViewModel = hiltViewModel<AlbumGridViewModel>()
     val state = albumViewModel.state.collectAsState()
 
-    AlbumGridScreen(state = state.value, onClose = onClose, onAlbumClick = onAlbumClick, breedId ="asda")
+    AlbumGridScreen(state = state.value, onClose = onClose, onAlbumClick = onAlbumClick, breedId = state.value.breedId)
 
 }
 

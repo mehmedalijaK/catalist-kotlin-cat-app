@@ -15,7 +15,7 @@ data class Breed(
     val wikipediaUrl: String = "",
     val description: String = "",
     val temperament: String,
-    val imageId: String?,
+    val coverImageId: String?,
     val lifeSpan: String,
     @Embedded val weight: Weight,
     val rare: Int,

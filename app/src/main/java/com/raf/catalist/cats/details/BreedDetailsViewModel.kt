@@ -83,7 +83,7 @@ class BreedDetailsViewModel @Inject constructor(
         energyLevel = this.energyLevel,
         sheddingLevel = this.sheddingLevel,
         childFriendly = this.childFriendly,
-        image = this.imageId?.let { repository.getImage(it) }
+        image = this.coverImageId?.let { repository.getImage(it) }
     )
 
 }

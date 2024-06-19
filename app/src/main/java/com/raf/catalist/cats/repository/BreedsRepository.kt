@@ -1,10 +1,12 @@
 package com.raf.catalist.cats.repository
 
+import android.util.Log
 import androidx.room.withTransaction
 import com.raf.catalist.cats.api.BreedsApi
 import com.raf.catalist.cats.api.model.BreedApiModel
 import com.raf.catalist.cats.api.model.ImageApiModel
 import com.raf.catalist.cats.list.mappers.asBreedDbModel
+import com.raf.catalist.cats.list.mappers.asImageDbModel
 import com.raf.catalist.cats.list.model.BreedUiModel
 import com.raf.catalist.db.AppDatabase
 import com.raf.catalist.db.breed.Breed
@@ -34,8 +36,10 @@ class BreedsRepository @Inject constructor(
         val allPhotos = mutableListOf<Image>()
         allBreeds.forEachIndexed { index, breed ->
             breed.image?.id?.let {
-                Image(id = it, height = breed.image.height,
-                    width = breed.image.width, url = breed.image.url)
+                Image(
+                    id = it, height = breed.image.height,
+                    width = breed.image.width, url = breed.image.url, breedId = breed.id
+                )
             }?.let { allPhotos.add(it) }
         }
 
@@ -48,8 +52,10 @@ class BreedsRepository @Inject constructor(
 
     }
 
-    suspend fun getImages(breedId: String) : List<ImageApiModel> {
-        return breedsApi.getBengalImages(limit = 10, breedIds = breedId)
+    suspend fun getImages(breedId: String) {
+        val allImages = breedsApi.getBengalImages(limit = 10, breedIds = breedId)
+        Log.d("images", allImages.toString())
+        database.breedDao().insertAllImages(allImages.map { it.asImageDbModel(breedId) })
     }
 
 //    fun allBreeds(): List<BreedData> = breeds.value
@@ -73,6 +79,7 @@ class BreedsRepository @Inject constructor(
     fun observeBreedsFlow() = database.breedDao().observeBreeds() // With this ViewModel can observe
     fun observeBreeds(): Flow<List<BreedUiModel>> = breeds.asStateFlow()
     fun observeBreedFlow(breedId: String) = database.breedDao().getBreedFlow(breedId)
+    fun observeAlbumsFlow(breedId: String) = database.breedDao().getImageFlow(breedId = breedId)
 
     fun filterData(catName: String){
         breeds.update {
@@ -87,6 +94,7 @@ class BreedsRepository @Inject constructor(
 
     fun getImage(imageId: String): Image? = database.breedDao().getImage(imageId)
 
+//    fun observeImageFlow() = database.breedDao().getBreedFlow(breedId)
 
     private fun Breed.asBreedUiModel() = BreedUiModel(
         id = this.id,
@@ -104,7 +112,7 @@ class BreedsRepository @Inject constructor(
         energyLevel = this.energyLevel,
         sheddingLevel = this.sheddingLevel,
         childFriendly = this.childFriendly,
-        image = this.imageId?.let { getImage(it) }
+        image = this.coverImageId?.let { getImage(it) }
     )
 
     private fun Image.asImageUiModel() =
