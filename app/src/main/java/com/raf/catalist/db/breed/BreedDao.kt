@@ -1,4 +1,4 @@
-package com.raf.catalist.cats.list.db
+package com.raf.catalist.db.breed
 
 import androidx.room.Dao
 import androidx.room.Insert

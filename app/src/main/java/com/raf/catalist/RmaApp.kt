@@ -2,7 +2,6 @@ package com.raf.catalist
 
 import android.app.Application
 import androidx.room.Room
-import com.raf.catalist.cats.list.db.Breed
 import com.raf.catalist.db.AppDatabase
 
 class RmaApp : Application() {

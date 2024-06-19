@@ -1,9 +1,7 @@
-package com.raf.catalist.cats.list.db
+package com.raf.catalist.db.breed
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.raf.catalist.cats.api.model.Image
-import com.raf.catalist.cats.api.model.Weight
 
 @Entity
 data class Breed(

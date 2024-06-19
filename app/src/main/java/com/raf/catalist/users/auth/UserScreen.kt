@@ -93,11 +93,6 @@ fun LoginScreen() {
                     contentDescription = "Cat Background",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                    .blur(
-                        radiusX = 2.dp,
-                        radiusY = 2.dp,
-                        edgeTreatment = BlurredEdgeTreatment.Unbounded
-                    )
                 )
                 Box(
                     modifier = Modifier
@@ -197,12 +192,15 @@ fun CustomTextField(
             label = label,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(bottom = 8.dp),
+                .padding(bottom = 8.dp)
+//                .background(color = Color.Red)
+            ,
             singleLine = true,
-            shape = RoundedCornerShape(25),
+//            shape = RoundedCornerShape(0),
             colors = TextFieldDefaults.colors(
-                focusedIndicatorColor  = Color.Transparent,
-                unfocusedIndicatorColor = Color.Transparent,
+                unfocusedContainerColor = Color.Transparent,
+                focusedContainerColor = Color.Black.copy(alpha = 0.3f),
+                errorContainerColor = Color.Transparent
             ),
             isError = isError
         )
