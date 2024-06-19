@@ -1,10 +1,12 @@
 package com.raf.catalist.cats.gallery
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.raf.catalist.cats.album.model.AlbumUiModel
 import com.raf.catalist.cats.api.model.ImageApiModel
 import com.raf.catalist.cats.details.BreedDetailsState
+import com.raf.catalist.cats.details.breedId
 import com.raf.catalist.cats.repository.BreedsRepository
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -13,12 +15,14 @@ import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
-class AlbumGalleryViewModel(
-    private val breedId: String,
-    private val repository: BreedsRepository = BreedsRepository
+class AlbumGalleryViewModel @Inject constructor(
+    savedStateHandle: SavedStateHandle,
+    private val repository: BreedsRepository
 ) : ViewModel() {
 
+    private val breedId: String = savedStateHandle.breedId
     private val _state = MutableStateFlow(AlbumGalleryContract.AlbumGalleryUiState())
     val state = _state.asStateFlow()
     private fun setState(reducer: AlbumGalleryContract.AlbumGalleryUiState.() -> AlbumGalleryContract.AlbumGalleryUiState) = _state.update(reducer)
@@ -52,3 +56,6 @@ class AlbumGalleryViewModel(
     )
 
 }
+
+inline val SavedStateHandle.breedId: String
+    get() = checkNotNull(get("breedId")) { "breedId is mandatory" }

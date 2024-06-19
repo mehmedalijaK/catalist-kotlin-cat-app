@@ -4,15 +4,17 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.raf.catalist.db.breed.Breed
 import com.raf.catalist.db.breed.BreedDao
+import com.raf.catalist.db.breed.Image
 import com.raf.catalist.db.user.User
 import com.raf.catalist.db.user.UserDao
 
 @Database(
     entities = [
         Breed::class,
-        User::class
+        User::class,
+        Image::class
     ],
-    version = 2,
+    version = 4,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {

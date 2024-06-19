@@ -30,6 +30,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -40,6 +41,7 @@ import coil.compose.SubcomposeAsyncImage
 
 import com.raf.catalist.R
 import com.raf.catalist.cats.album.model.AlbumUiModel
+import com.raf.catalist.cats.list.BreedsListViewModel
 
 fun NavGraphBuilder.catAlbumGrid(
     route: String,
@@ -50,20 +52,10 @@ fun NavGraphBuilder.catAlbumGrid(
     route = route,
     arguments = arguments
 ) { navBackStackEntry ->
-    val dataId = navBackStackEntry.arguments?.getString("id")
-        ?: throw IllegalArgumentException("id is required.")
-
-    val albumViewModel = viewModel<AlbumGridViewModel>(
-        factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return AlbumGridViewModel(breedId = dataId) as T
-            }
-        },
-    )
-
+    val albumViewModel = hiltViewModel<AlbumGridViewModel>()
     val state = albumViewModel.state.collectAsState()
-    AlbumGridScreen(state = state.value, onClose = onClose, onAlbumClick = onAlbumClick, breedId = dataId)
+
+    AlbumGridScreen(state = state.value, onClose = onClose, onAlbumClick = onAlbumClick, breedId ="asda")
 
 }
 
@@ -113,7 +105,8 @@ fun AlbumGridScreen(
                         modifier = Modifier
                             .padding(8.dp)
                             .fillMaxWidth()
-                            .aspectRatio(1f).clickable {
+                            .aspectRatio(1f)
+                            .clickable {
                                 onAlbumClick(breedId)
                             }
                     ) {

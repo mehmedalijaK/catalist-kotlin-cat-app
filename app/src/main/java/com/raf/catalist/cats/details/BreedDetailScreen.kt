@@ -54,6 +54,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -70,17 +71,20 @@ fun NavGraphBuilder.breedDetails(
 ) = composable(
     route = route
 ) {navBackStackEntry ->
-    val dataId = navBackStackEntry.arguments?.getString("id")
-        ?: throw IllegalArgumentException("id is required.")
 
-    val breedDetailsViewModel = viewModel<BreedDetailsViewModel>(
-        factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return BreedDetailsViewModel(breedId = dataId) as T
-            }
-        },
-    )
+    val breedDetailsViewModel = hiltViewModel<BreedDetailsViewModel>(navBackStackEntry)
+
+//    val dataId = navBackStackEntry.arguments?.getString("id")
+//        ?: throw IllegalArgumentException("id is required.")
+//
+//    val breedDetailsViewModel = viewModel<BreedDetailsViewModel>(
+//        factory = object : ViewModelProvider.Factory {
+//            @Suppress("UNCHECKED_CAST")
+//            override fun <T : ViewModel> create(modelClass: Class<T>): T {
+//                return BreedDetailsViewModel(breedId = dataId) as T
+//            }
+//        },
+//    )
 
     val state = breedDetailsViewModel.state.collectAsState()
 
@@ -90,7 +94,7 @@ fun NavGraphBuilder.breedDetails(
             navController.popBackStack()
         },
         onVisitAlbum = {
-            navController.navigate(route = "album/${dataId}")
+            navController.navigate(route = "album/${state.value.breedId}")
         }
     )
 }

@@ -1,6 +1,5 @@
 package com.raf.catalist.cats.list.model
 
-import com.raf.catalist.cats.api.model.Image
 import com.raf.catalist.cats.api.model.Weight
 
 data class BreedUiModel(
@@ -11,7 +10,7 @@ data class BreedUiModel(
     val wikipediaUrl: String = "",
     val description: String = "",
     val temperament: String,
-    val image: Image?,
+    val image: com.raf.catalist.db.breed.Image?,
     val lifeSpan: String,
     val weight: Weight,
     val rare: Int,

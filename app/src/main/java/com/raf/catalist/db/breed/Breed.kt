@@ -1,7 +1,10 @@
 package com.raf.catalist.db.breed
 
+import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.raf.catalist.cats.api.model.Weight
+import kotlinx.serialization.Serializable
 
 @Entity
 data class Breed(
@@ -12,9 +15,9 @@ data class Breed(
     val wikipediaUrl: String = "",
     val description: String = "",
     val temperament: String,
-//    val image: Image?,
+    val imageId: String?,
     val lifeSpan: String,
-//    val weight: Weight,
+    @Embedded val weight: Weight,
     val rare: Int,
     val affectionLevel: Int,
     val dogFriendly: Int,

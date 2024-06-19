@@ -1,25 +1,27 @@
 package com.raf.catalist.cats.repository
 
-import com.raf.catalist.RmaApp
+import androidx.room.withTransaction
 import com.raf.catalist.cats.api.BreedsApi
 import com.raf.catalist.cats.api.model.BreedApiModel
-import com.raf.catalist.cats.api.model.Image
 import com.raf.catalist.cats.api.model.ImageApiModel
-import com.raf.catalist.cats.api.model.Weight
-import com.raf.catalist.cats.domain.BreedData
+import com.raf.catalist.cats.list.mappers.asBreedDbModel
 import com.raf.catalist.cats.list.model.BreedUiModel
+import com.raf.catalist.db.AppDatabase
+import com.raf.catalist.db.breed.Breed
+import com.raf.catalist.db.breed.Image
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import retrofit
+import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 // Single static instance -> single source of truth for Breeds
-object BreedsRepository {
+class BreedsRepository @Inject constructor(
+    private val database: AppDatabase,
+) {
 
 //    private val database by lazy {RmaApp.data}
     private val breedsApi: BreedsApi = retrofit.create(BreedsApi::class.java)
@@ -27,8 +29,23 @@ object BreedsRepository {
     private var breedsCached: List<BreedApiModel> = emptyList();
 
     suspend fun getBreeds() {
-        breedsCached = breedsApi.getAllBreeds() // We will fetch all breeds and have them locally cached.
-        breeds.update { breedsCached.map { it.asBreedUiModel() } } // Observer from BreedsListViewModel will trigger on this
+        val allBreeds = breedsApi.getAllBreeds()
+
+        val allPhotos = mutableListOf<Image>()
+        allBreeds.forEachIndexed { index, breed ->
+            breed.image?.id?.let {
+                Image(id = it, height = breed.image.height,
+                    width = breed.image.width, url = breed.image.url)
+            }?.let { allPhotos.add(it) }
+        }
+
+        database.withTransaction {
+            database.breedDao().upsertAllBreeds(allBreeds
+                .map { it.asBreedDbModel() }
+                .toMutableList())
+            database.breedDao().upsertAllImages(allPhotos)
+        }
+
     }
 
     suspend fun getImages(breedId: String) : List<ImageApiModel> {
@@ -52,26 +69,29 @@ object BreedsRepository {
         delay(1.seconds)
     }
 
-    fun observeBreeds(): Flow<List<BreedUiModel>> = breeds.asStateFlow() // With this ViewModel can observe
-    fun observeBreedDetails(breedId: String): Flow<BreedUiModel?> {
-        return observeBreeds()
-            .map { breeds -> breeds.find { it.id == breedId } }
-            .distinctUntilChanged()
-    }
+    fun observeBreedsFlow() = database.breedDao().observeBreeds() // With this ViewModel can observe
+    fun observeBreeds(): Flow<List<BreedUiModel>> = breeds.asStateFlow()
+//    fun observeBreedDetails(breedId: String): Flow<BreedUiModel?> {
+//        return observeBreeds()
+//            .map { breeds -> breeds.find { it.id == breedId } }
+//            .distinctUntilChanged()
+//    }
 
     fun filterData(catName: String){
         breeds.update {
             if (catName.isEmpty()) {
                 // Return all breeds if catName is empty
-                breedsCached.map { it.asBreedUiModel() }
+                database.breedDao().getAllBreeds().map { it.asBreedUiModel() }
             } else {
-                ( breedsCached.map { it.asBreedUiModel() }).filter { it.name.contains(catName, ignoreCase = true) }
+                ( database.breedDao().getAllBreeds().map { it.asBreedUiModel() }).filter { it.name.contains(catName, ignoreCase = true) }
             }
         }
     }
 
+    fun getImage(imageId: String): Image? = database.breedDao().getImage(imageId)
 
-    private fun BreedApiModel.asBreedUiModel() = BreedUiModel(
+
+    private fun Breed.asBreedUiModel() = BreedUiModel(
         id = this.id,
         name = this.name,
         altNames = this.altNames,
@@ -79,7 +99,6 @@ object BreedsRepository {
         wikipediaUrl = this.wikipediaUrl,
         description = this.description,
         temperament = this.temperament,
-        image = this.image,
         lifeSpan = this.lifeSpan,
         weight = this.weight,
         rare = this.rare,
@@ -88,6 +107,17 @@ object BreedsRepository {
         energyLevel = this.energyLevel,
         sheddingLevel = this.sheddingLevel,
         childFriendly = this.childFriendly,
+        image = this.imageId?.let { getImage(it) }
     )
+
+    private fun Image.asImageUiModel() =
+        com.raf.catalist.cats.api.model.Image(
+        id = this.id,
+        width = this.width,
+        height = this.height,
+        url = this.url
+    )
+
+
 
 }

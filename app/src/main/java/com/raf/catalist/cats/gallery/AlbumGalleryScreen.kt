@@ -28,6 +28,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -39,6 +40,7 @@ import com.mxalbert.zoomable.Zoomable
 import com.raf.catalist.R
 import com.raf.catalist.cats.album.AlbumGridScreen
 import com.raf.catalist.cats.album.AlbumGridViewModel
+import com.raf.catalist.cats.details.BreedDetailsViewModel
 
 
 fun NavGraphBuilder.albumGallery(
@@ -49,17 +51,7 @@ fun NavGraphBuilder.albumGallery(
     route = route,
     arguments = arguments
 ) { navBackStackEntry ->
-    val dataId = navBackStackEntry.arguments?.getString("id")
-        ?: throw IllegalArgumentException("id is required.")
-
-    val albumGalleryViewModel = viewModel<AlbumGalleryViewModel>(
-        factory = object : ViewModelProvider.Factory {
-            @Suppress("UNCHECKED_CAST")
-            override fun <T : ViewModel> create(modelClass: Class<T>): T {
-                return AlbumGalleryViewModel(breedId = dataId) as T
-            }
-        },
-    )
+    val albumGalleryViewModel = hiltViewModel<AlbumGalleryViewModel>(navBackStackEntry)
 
     val state = albumGalleryViewModel.state.collectAsState()
     AlbumGalleryScreen(state = state.value, onClose = onClose)

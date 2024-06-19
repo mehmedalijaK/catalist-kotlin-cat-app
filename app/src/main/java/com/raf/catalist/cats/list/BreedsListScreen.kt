@@ -51,6 +51,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
@@ -61,6 +62,7 @@ import com.raf.catalist.cats.domain.BreedData
 import com.raf.catalist.cats.list.model.BreedUiModel
 import com.raf.catalist.core.compose.NoDataMessage
 import com.raf.catalist.core.compose.SearchBarM3
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 @ExperimentalMaterial3Api
 fun NavGraphBuilder.breedsListScreen(
@@ -68,7 +70,7 @@ fun NavGraphBuilder.breedsListScreen(
     navController: NavController
 ) = composable(route = route){
 
-    val breedsListViewModel = viewModel<BreedsListViewModel>()
+    val breedsListViewModel = hiltViewModel<BreedsListViewModel>()
 
 //  Will create mutableState, so we do not have to create coroutines
     val state by breedsListViewModel.state.collectAsState()

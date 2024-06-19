@@ -47,24 +47,7 @@ data class Image(
 )
 
 
-fun BreedApiModel.asBreedUiModel() = BreedUiModel(
-    id = this.id,
-    name = this.name,
-    altNames = this.altNames,
-    origin = this.origin,
-    wikipediaUrl = this.wikipediaUrl,
-    description = this.description,
-    temperament = this.temperament,
-    image = this.image,
-    lifeSpan = this.lifeSpan,
-    weight = this.weight,
-    rare = this.rare,
-    affectionLevel = this.affectionLevel,
-    dogFriendly = this.dogFriendly,
-    energyLevel = this.energyLevel,
-    sheddingLevel = this.sheddingLevel,
-    childFriendly = this.childFriendly
-)
+
 
 fun ImageApiModel.asAlbumUiModel() = AlbumUiModel(
     id = this.id,
