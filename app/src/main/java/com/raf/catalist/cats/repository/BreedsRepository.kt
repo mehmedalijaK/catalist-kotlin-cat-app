@@ -1,5 +1,6 @@
 package com.raf.catalist.cats.repository
 
+import com.raf.catalist.RmaApp
 import com.raf.catalist.cats.api.BreedsApi
 import com.raf.catalist.cats.api.model.BreedApiModel
 import com.raf.catalist.cats.api.model.Image
@@ -20,6 +21,7 @@ import kotlin.time.Duration.Companion.seconds
 // Single static instance -> single source of truth for Breeds
 object BreedsRepository {
 
+//    private val database by lazy {RmaApp.data}
     private val breedsApi: BreedsApi = retrofit.create(BreedsApi::class.java)
     private val breeds = MutableStateFlow(listOf<BreedUiModel>())
     private var breedsCached: List<BreedApiModel> = emptyList();

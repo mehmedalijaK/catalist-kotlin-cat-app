@@ -11,6 +11,7 @@ import com.raf.catalist.cats.album.catAlbumGrid
 import com.raf.catalist.cats.details.breedDetails
 import com.raf.catalist.cats.gallery.albumGallery
 import com.raf.catalist.cats.list.breedsListScreen
+import com.raf.catalist.users.auth.user
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -22,7 +23,7 @@ fun AppNavigation() {
         navController = navController,
         startDestination = "home"
     ){
-        breedsListScreen(
+        user(
             route = "home",
             navController = navController
         )

@@ -22,6 +22,13 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments["room.schemaLocation"] = "$projectDir/schemas"
+            }
+        }
+
     }
 
 
@@ -64,6 +71,8 @@ dependencies {
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.dotenv.kotlin)
     implementation("com.mxalbert.zoomable:zoomable:1.6.1")
+    implementation("com.github.skydoves:cloudy:0.1.2")
+
 
 
 //    implementation(libs.androidx.material3)
