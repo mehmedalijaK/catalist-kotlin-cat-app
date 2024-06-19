@@ -27,7 +27,7 @@ class AlbumGridViewModel @Inject constructor(
 ) : ViewModel() {
 
     private val breedId: String = savedStateHandle.breedId
-    private val _state = MutableStateFlow(AlbumGridContract.AlbumGridUiState())
+    private val _state = MutableStateFlow(AlbumGridContract.AlbumGridUiState(breedId))
     val state = _state.asStateFlow()
     private fun setState(reducer: AlbumGridContract.AlbumGridUiState.() -> AlbumGridContract.AlbumGridUiState) = _state.update(reducer)
 

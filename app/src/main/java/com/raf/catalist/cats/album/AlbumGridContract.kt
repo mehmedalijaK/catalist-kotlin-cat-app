@@ -4,8 +4,8 @@ import com.raf.catalist.cats.album.model.AlbumUiModel
 
 interface AlbumGridContract {
     data class AlbumGridUiState(
+        val breedId: String,
         val loading: Boolean = false,
         val albums: List<AlbumUiModel> = emptyList(),
-        val breedId: String = "",
     )
 }

@@ -8,6 +8,8 @@ import com.raf.catalist.cats.api.model.ImageApiModel
 import com.raf.catalist.cats.details.BreedDetailsState
 import com.raf.catalist.cats.details.breedId
 import com.raf.catalist.cats.repository.BreedsRepository
+import com.raf.catalist.db.breed.Image
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -18,6 +20,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
+@HiltViewModel
 class AlbumGalleryViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val repository: BreedsRepository
@@ -30,20 +33,20 @@ class AlbumGalleryViewModel @Inject constructor(
 
     init {
         fetchAlbums()
-//        observeImageFlow()
+        observeAlbums()
     }
 
-//    private fun observeImageFlow() {
-//        viewModelScope.launch {
-//            // Which will observe all changes to our passwords
-//            withContext(Dispatchers.IO){
-//                repository.observeBreedsFlow().distinctUntilChanged().collect {
-//                    setState { copy(breeds = it.map {it.asBreedUiModel()}) }
-//                }
-//            }
-//
-//        }
-//    }
+    private fun observeAlbums() {
+        viewModelScope.launch {
+            // Which will observe all changes to our passwords
+            withContext(Dispatchers.IO){
+                repository.observeAlbumsFlow(breedId).collect {
+                    setState { copy(albums = it.map {it.asImageUi()}) }
+                }
+            }
+
+        }
+    }
 
     private fun fetchAlbums() {
         viewModelScope.launch {
@@ -66,6 +69,14 @@ class AlbumGalleryViewModel @Inject constructor(
         width = this.width,
         height = this.height
     )
+
+    private fun Image.asImageUi() =
+        AlbumUiModel(
+            id = this.id,
+            url = "" + this.url,
+            width = this.width,
+            height = this.height,
+        )
 
 }
 
