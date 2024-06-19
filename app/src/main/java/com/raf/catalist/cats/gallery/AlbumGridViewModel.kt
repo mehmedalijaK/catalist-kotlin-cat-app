@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.raf.catalist.cats.album.model.AlbumUiModel
 import com.raf.catalist.cats.api.model.ImageApiModel
-import com.raf.catalist.cats.details.BreedDetailsState
 import com.raf.catalist.cats.details.breedId
 import com.raf.catalist.cats.repository.BreedsRepository
 import com.raf.catalist.db.breed.Image
@@ -13,8 +12,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.distinctUntilChanged
-import kotlinx.coroutines.flow.getAndUpdate
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -56,7 +53,7 @@ class AlbumGalleryViewModel @Inject constructor(
                     repository.getImages(breedId = breedId)
                 }
             } catch (error: Exception) {
-                // TODO Handle error
+                setState { copy(error = error) }
             }
             setState { copy(loading = false) }
         }

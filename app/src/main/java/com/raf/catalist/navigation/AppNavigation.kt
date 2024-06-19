@@ -11,6 +11,7 @@ import com.raf.catalist.cats.album.catAlbumGrid
 import com.raf.catalist.cats.details.breedDetails
 import com.raf.catalist.cats.gallery.albumGallery
 import com.raf.catalist.cats.list.breedsListScreen
+import com.raf.catalist.cats.quiz.quizHome
 import com.raf.catalist.users.auth.user
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -21,10 +22,10 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "login"
+        startDestination = "quizHome"
     ){
-        user(
-            route = "login",
+        quizHome(
+            route = "quizHome",
             navController = navController
         )
 
