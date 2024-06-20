@@ -5,6 +5,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
@@ -105,6 +106,10 @@ fun Quiz(
     state: QuizUiState,
 ) {
     var searchQuery by remember { mutableStateOf(TextFieldValue("")) }
+    var selectedFirst by remember { mutableStateOf(false) }
+    var selectedSecond by remember { mutableStateOf(false) }
+
+
     Scaffold (
         topBar = {
             TopAppBar(
@@ -168,8 +173,8 @@ fun Quiz(
                 )
 
                 LazyColumn(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    modifier = Modifier.fillMaxWidth().padding(bottom = 5.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally,
                 ) {
                     val models = arrayOf(
                         state.question[state.questionNo - 1].firstBreed.image?.url,
@@ -180,20 +185,28 @@ fun Quiz(
                         state.question[state.questionNo - 1].secondBreed
                     )
                     items(2) { index ->
+
+
                         Card(
                             modifier = Modifier
                                 .padding(8.dp)
                                 .fillMaxWidth()
                                 .height(195.dp)
 //                                .aspectRatio(1f)
-                                .clickable {}
                         ) {
                             Column(
                                 modifier = Modifier.fillMaxSize(),
                                 verticalArrangement = Arrangement.Center,
                                 horizontalAlignment = Alignment.CenterHorizontally
                             ) {
-                                Box(contentAlignment = Alignment.BottomCenter) {
+                                Box(contentAlignment = Alignment.BottomCenter,
+                                    modifier = if ((index == 0 && selectedFirst) || (index == 1 && selectedSecond)) {
+                                        Modifier.border(width = 5.dp, color = Color(0xFF50C878), shape = RoundedCornerShape(8.dp))
+                                    } else {
+                                        Modifier
+                                    },
+
+                                ) {
                                     Zoomable {
                                         SubcomposeAsyncImage(
                                             model = models[index],
@@ -209,7 +222,23 @@ fun Quiz(
                                             },
                                             contentDescription = null,
                                             contentScale = ContentScale.FillWidth,
-                                            modifier = Modifier.fillMaxSize()
+                                            modifier = Modifier.fillMaxSize().clickable {
+                                                if(index == 0){
+                                                    if(selectedFirst){
+                                                        selectedFirst = false
+                                                    }else{
+                                                        selectedFirst = true
+                                                        selectedSecond = false
+                                                    }
+                                                }else{
+                                                    if(selectedSecond){
+                                                        selectedSecond = false
+                                                    }else{
+                                                        selectedSecond = true
+                                                        selectedFirst = false
+                                                    }
+                                                }
+                                            }
                                         )
                                     }
                                     Text(
