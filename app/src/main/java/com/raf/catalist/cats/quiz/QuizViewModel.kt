@@ -3,6 +3,7 @@ package com.raf.catalist.cats.quiz
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.raf.catalist.cats.api.model.Image
 import com.raf.catalist.cats.api.model.Weight
 import com.raf.catalist.cats.list.BreedListUiEvent
 import com.raf.catalist.cats.list.BreedsListState
@@ -130,8 +131,9 @@ class QuizViewModel @Inject constructor(
             try {
                 withContext(Dispatchers.IO) {
                     repository.getBreeds()
+                    generateQuiz()
                 }
-                generateQuiz()
+
 //                setState { copy(breeds = breeds.map { it.asBreedUiModel() }) }
             } catch (error: IOException) {
 //                setState { copy(error = BreedsListState.ListError.LoadingListFailed(cause = error)) }
@@ -161,7 +163,7 @@ class QuizViewModel @Inject constructor(
         image = this.coverImageId?.let { repository.getImage(it) }
     )
 
-    private fun generateQuiz() {
+    private suspend fun generateQuiz() {
 
         val questions = listOf(
             "Which cat is heavier on average?",
@@ -174,6 +176,18 @@ class QuizViewModel @Inject constructor(
         var i: Int = 1
         repeat(20) {
             val randomBreeds: List<BreedUiModel> = getRandomBreeds(breeds)
+
+            randomBreeds.map { breed ->
+                val images = repository.getImagesBreed(breed.id)
+                var randomImage: com.raf.catalist.db.breed.Image? = images.randomOrNull()
+
+                if (randomImage != null) {
+                    breed.copy(image = randomImage)
+                } else {
+                    breed
+                }
+            }
+
             val randomQuestion = questions.random()
 
             if (randomQuestion.equals(questions[0])) {
@@ -217,6 +231,10 @@ class QuizViewModel @Inject constructor(
         setState { copy( question = answers)}
         setState { copy (generatingQuestions = false) }
         Log.d("questions", answers.toString())
+    }
+
+    fun List<Answer>.containsImage(image: com.raf.catalist.db.breed.Image?): Boolean {
+        return this.any { it.firstBreed.image == image ||  it.secondBreed.image == image}
     }
 
 }

@@ -369,11 +369,11 @@ fun CircularCountdownTimer(totalTime: Int, remainingTime: Int , onTimeChange: (I
 fun getRandomBreeds(breeds: List<BreedUiModel>): List<BreedUiModel> {
     if (breeds.size < 2) throw IllegalArgumentException("Breeds list must contain at least two elements.")
 
-    val firstBreed = breeds.random(Random(System.currentTimeMillis()))
+    val firstBreed = breeds.random()
     var secondBreed: BreedUiModel
 
     do {
-        secondBreed = breeds.random(Random(System.currentTimeMillis()))
+        secondBreed = breeds.random()
     } while (secondBreed == firstBreed)
 
     return listOf(firstBreed, secondBreed)

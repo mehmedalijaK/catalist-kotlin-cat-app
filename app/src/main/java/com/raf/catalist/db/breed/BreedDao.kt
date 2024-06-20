@@ -40,6 +40,9 @@ interface BreedDao{
     @Query("SELECT * FROM Image WHERE breedId = :breedId")
     fun getImageFlow(breedId: String): Flow<List<Image>>
 
+    @Query("SELECT * FROM Image WHERE breedId = :breedId")
+    fun getImagesBreed(breedId: String): List<Image>
+
     @Query("SELECT * FROM Breed")
     fun observeBreeds() : Flow<List<Breed>>
 

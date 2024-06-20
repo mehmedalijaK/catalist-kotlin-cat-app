@@ -31,6 +31,7 @@ class BreedsRepository @Inject constructor(
     private var breedsCached: List<BreedApiModel> = emptyList();
 
     suspend fun getBreeds() {
+
         val allBreeds = breedsApi.getAllBreeds()
 
         val allPhotos = mutableListOf<Image>()
@@ -52,11 +53,24 @@ class BreedsRepository @Inject constructor(
 
     }
 
+
+
     suspend fun getImages(breedId: String) {
         val allImages = breedsApi.getBengalImages(limit = 10, breedIds = breedId)
         Log.d("images", allImages.toString())
         database.breedDao().insertAllImages(allImages.map { it.asImageDbModel(breedId) })
     }
+
+    suspend fun getImagesBreed(breedId: String): List<Image> {
+        var images : List<Image> = database.breedDao().getImagesBreed(breedId)
+        if(images.isEmpty()){
+            getImages(breedId)
+            images = database.breedDao().getImagesBreed(breedId)
+        }
+        return images
+    }
+
+
 
 //    fun allBreeds(): List<BreedData> = breeds.value
 

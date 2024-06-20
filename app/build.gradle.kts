@@ -79,6 +79,9 @@ dependencies {
     implementation(libs.dotenv.kotlin)
     implementation("com.mxalbert.zoomable:zoomable:1.6.1")
     implementation("com.github.skydoves:cloudy:0.1.2")
+    implementation("androidx.compose.animation:animation:1.3.1")
+    implementation("com.google.accompanist:accompanist-coil:0.15.0")
+
 
 
 
