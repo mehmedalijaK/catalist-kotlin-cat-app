@@ -10,7 +10,10 @@ data class QuizUiState (
     val error: ListError? = null,
     val question: List<Answer> = emptyList(),
     val questionNo: Int = 1,
-    val score: Int = 0
+    val score: Double = 0.0,
+    val numRight: Int = 0,
+    val secondTime: Int = 0,
+    val done: Boolean = false,
 )
 
 sealed class ListError{

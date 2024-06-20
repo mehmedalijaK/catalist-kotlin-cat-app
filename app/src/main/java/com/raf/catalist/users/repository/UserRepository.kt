@@ -12,7 +12,7 @@ class UserRepository @Inject constructor(
 
     fun observeUser() = database.userDao().observeUser()
     fun createUser(firstName: String, lastName: String, mail: String, username: String) {
-        database.userDao().insert(User(firstName = firstName, lastName = lastName, mail = mail, username = username, id = 1))
+        database.userDao().insert(User(firstName = firstName, lastName = lastName, mail = mail, username = username))
     }
 
 

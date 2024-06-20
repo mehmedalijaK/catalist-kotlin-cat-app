@@ -25,8 +25,13 @@ fun AppNavigation() {
         navController = navController,
         startDestination = "quizHome"
     ){
-        quiz(
+        quizHome(
             route = "quizHome",
+            navController = navController
+        )
+
+        quiz(
+            route = "quiz",
             navController = navController
         )
 

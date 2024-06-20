@@ -9,6 +9,7 @@ import com.raf.catalist.cats.list.BreedsListState
 import com.raf.catalist.cats.list.model.BreedUiModel
 import com.raf.catalist.cats.quiz.model.Answer
 import com.raf.catalist.cats.repository.BreedsRepository
+import com.raf.catalist.cats.repository.GameRepository
 import com.raf.catalist.db.breed.Breed
 import com.raf.catalist.users.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -25,7 +26,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class QuizViewModel @Inject constructor(
-    private val repository: BreedsRepository
+    private val repository: BreedsRepository,
+    private val repositoryGame: GameRepository
 ) :ViewModel(){
     private val _state = MutableStateFlow(QuizUiState())
 
@@ -64,9 +66,45 @@ class QuizViewModel @Inject constructor(
         viewModelScope.launch {
             events.collect {
                 when (it) {
-                    is QuizUiEvent.setQuestions -> {
-                        setState { copy( question = it.questions)}
-                        setState { copy (generatingQuestions = false) }
+                    is QuizUiEvent.nextQuestion -> {
+
+                        if(it.result.timeRemaining == 0){
+                            if(it.result.indexAnswer != -1) {
+                                if (it.result.indexAnswer == state.value.question[it.result.questionNo - 1].indexRightAnswer) {
+                                    setState { copy(numRight = numRight+1) }
+                                    setState { copy(secondTime = 0) }
+                                    setState { copy(done = true) }
+                                }else{
+                                    setState { copy(secondTime = 0) }
+                                    setState { copy(done = true) }
+                                }
+                            }else{
+                                setState { copy(secondTime = 0) }
+                                setState { copy(done = true) }
+                            }
+                        }else{
+                            if(it.result.indexAnswer == -1){
+                                setState { copy(done = true) }
+                                setState { copy(secondTime = it.result.timeRemaining) }
+                            }else{
+                                if(it.result.indexAnswer == state.value.question[it.result.questionNo-1].indexRightAnswer)
+                                    setState { copy (numRight = numRight+1) }
+
+                                if(it.result.questionNo == 20){
+                                    setState { copy(done = true) }
+                                    setState { copy(secondTime = it.result.timeRemaining) }
+                                    Log.d("time", it.result.timeRemaining.toString())
+                                }else {
+                                    setState { copy( questionNo = (it.result.questionNo+1))}
+                                }
+                            }
+                        }
+
+                    }
+                    is QuizUiEvent.postGame -> {
+                        withContext(Dispatchers.IO){
+                            repositoryGame.insertGame(it.game)
+                        }
                     }
                 }
             }
@@ -138,7 +176,7 @@ class QuizViewModel @Inject constructor(
             val randomBreeds: List<BreedUiModel> = getRandomBreeds(breeds)
             val randomQuestion = questions.random()
 
-            if (randomQuestion == questions[0]) {
+            if (randomQuestion.equals(questions[0])) {
                 val weightFirstBreed = randomBreeds[0].weight.metric?.split(" - ")?.firstOrNull()?.toIntOrNull()
                 val weightSecondBreed = randomBreeds[1].weight.metric?.split(" - ")?.firstOrNull()?.toIntOrNull()
 
