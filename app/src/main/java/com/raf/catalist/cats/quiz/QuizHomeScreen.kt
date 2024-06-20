@@ -34,6 +34,7 @@ import androidx.compose.ui.draw.paint
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.navigation.NavController
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -124,18 +125,19 @@ fun QuizHomeScreen() {
                             text = "Play and Win",
                             fontSize = 20.sp,
                             color = Color.White,
+                            fontWeight = FontWeight.Bold,
                             modifier = Modifier.padding(bottom = 8.dp)
                         )
                         Text(
                             text = "Start a quiz now and enjoy",
                             fontSize = 14.sp,
                             color = Color.White.copy(alpha = 0.7f),
+                            fontWeight = FontWeight.SemiBold,
                             modifier = Modifier.padding(bottom = 16.dp)
                         )
                         Button(onClick = {},
                             colors = ButtonDefaults.buttonColors(
                                 containerColor = Color.White,
-
                             )) {
                             Text(text = "Get Started", color = Color.Black)
                         }

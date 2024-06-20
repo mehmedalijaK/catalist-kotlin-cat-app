@@ -11,6 +11,7 @@ import com.raf.catalist.cats.album.catAlbumGrid
 import com.raf.catalist.cats.details.breedDetails
 import com.raf.catalist.cats.gallery.albumGallery
 import com.raf.catalist.cats.list.breedsListScreen
+import com.raf.catalist.cats.quiz.quiz
 import com.raf.catalist.cats.quiz.quizHome
 import com.raf.catalist.users.auth.user
 
@@ -24,7 +25,7 @@ fun AppNavigation() {
         navController = navController,
         startDestination = "quizHome"
     ){
-        quizHome(
+        quiz(
             route = "quizHome",
             navController = navController
         )
