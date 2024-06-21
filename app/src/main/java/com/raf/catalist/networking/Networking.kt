@@ -24,7 +24,6 @@ val dotenv = dotenv {
 val okHttpClient = OkHttpClient.Builder()
     .addInterceptor {
         val updatedRequest = it.request().newBuilder()
-            .addHeader("x-api-key", dotenv["API_KEY"])
             .build()
         it.proceed(updatedRequest)
     }
@@ -37,7 +36,7 @@ val okHttpClient = OkHttpClient.Builder()
 
 
 val retrofit: Retrofit = Retrofit.Builder()
-    .baseUrl("https://api.thecatapi.com/v1/")
-    .client(okHttpClient) // Pass the context here
+    .baseUrl("https://rma.finlab.rs/")
+    .client(okHttpClient)
     .addConverterFactory(AppJson.asConverterFactory("application/json".toMediaType()))
     .build()

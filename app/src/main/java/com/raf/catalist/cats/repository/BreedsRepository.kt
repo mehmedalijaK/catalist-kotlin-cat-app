@@ -16,17 +16,16 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import retrofit
 import javax.inject.Inject
 import kotlin.time.Duration.Companion.seconds
 
 // Single static instance -> single source of truth for Breeds
 class BreedsRepository @Inject constructor(
     private val database: AppDatabase,
+    private val breedsApi: BreedsApi
 ) {
 
 //    private val database by lazy {RmaApp.data}
-    private val breedsApi: BreedsApi = retrofit.create(BreedsApi::class.java)
     private val breeds = MutableStateFlow(listOf<BreedUiModel>())
     private var breedsCached: List<BreedApiModel> = emptyList();
 
@@ -69,6 +68,7 @@ class BreedsRepository @Inject constructor(
         }
         return images
     }
+
 
 
 

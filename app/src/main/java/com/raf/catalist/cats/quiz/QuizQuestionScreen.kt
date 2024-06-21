@@ -52,8 +52,8 @@ import com.raf.catalist.R
 import com.raf.catalist.cats.list.model.BreedUiModel
 import com.raf.catalist.cats.quiz.model.UserAnswer
 import com.raf.catalist.db.game.Game
+import com.raf.catalist.leaderboard.model.QuizResultUser
 import kotlinx.coroutines.launch
-import kotlin.random.Random
 
 @ExperimentalMaterial3Api
 fun NavGraphBuilder.quiz(
@@ -90,7 +90,7 @@ fun NavGraphBuilder.quiz(
                     userId = 1
                 )))
             }
-            CongratulationsScreen(result, navController, state)
+            CongratulationsScreen(result, navController, state,  eventPublisher = {quizViewModel.publishEvent(it)})
         }
 
     }
@@ -381,7 +381,12 @@ fun getRandomBreeds(breeds: List<BreedUiModel>): List<BreedUiModel> {
 
 
 @Composable
-fun CongratulationsScreen(result: Double, navController: NavController, state: QuizUiState) {
+fun CongratulationsScreen(
+    result: Double,
+    navController: NavController,
+    state: QuizUiState,
+    eventPublisher: (QuizUiEvent) -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -487,7 +492,12 @@ fun CongratulationsScreen(result: Double, navController: NavController, state: Q
 
         Button(
             onClick = {
-
+                eventPublisher(QuizUiEvent.postOnline(QuizResultUser(
+                    result = result,
+                    category = 3,
+                    nickname = ""
+                )))
+                navController.popBackStack()
             }, modifier = Modifier.fillMaxWidth().padding(top = 7.dp),
             contentPadding = PaddingValues(16.dp),
 

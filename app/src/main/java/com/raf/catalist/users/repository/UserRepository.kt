@@ -14,6 +14,7 @@ class UserRepository @Inject constructor(
     fun createUser(firstName: String, lastName: String, mail: String, username: String) {
         database.userDao().insert(User(firstName = firstName, lastName = lastName, mail = mail, username = username))
     }
+    fun getUser() = database.userDao().getUser()
 
 
 }

@@ -12,6 +12,9 @@ import com.raf.catalist.cats.quiz.model.Answer
 import com.raf.catalist.cats.repository.BreedsRepository
 import com.raf.catalist.cats.repository.GameRepository
 import com.raf.catalist.db.breed.Breed
+import com.raf.catalist.leaderboard.model.QuizResult
+import com.raf.catalist.leaderboard.model.QuizResultUser
+import com.raf.catalist.leaderboard.repository.LeaderboardRepository
 import com.raf.catalist.users.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
@@ -28,7 +31,9 @@ import javax.inject.Inject
 @HiltViewModel
 class QuizViewModel @Inject constructor(
     private val repository: BreedsRepository,
-    private val repositoryGame: GameRepository
+    private val repositoryGame: GameRepository,
+    private val leaderboardRepository: LeaderboardRepository,
+    private val userRepository: UserRepository
 ) :ViewModel(){
     private val _state = MutableStateFlow(QuizUiState())
 
@@ -107,6 +112,19 @@ class QuizViewModel @Inject constructor(
                             repositoryGame.insertGame(it.game)
                         }
                     }
+                    is QuizUiEvent.postOnline -> {
+                        withContext(Dispatchers.IO){
+                            val user = userRepository.getUser()
+
+                            val quizresult : QuizResultUser = QuizResultUser(
+                                category = 3,
+                                nickname = user.username,
+                                result = it.quizResultUser.result
+                            )
+
+                            leaderboardRepository.postResult(quizresult)
+                        }
+                    }
                 }
             }
         }
@@ -141,6 +159,12 @@ class QuizViewModel @Inject constructor(
                 setState { copy(loading = false) }
             }
             Weight
+        }
+    }
+
+    private fun post(){
+        viewModelScope.launch {
+
         }
     }
 
