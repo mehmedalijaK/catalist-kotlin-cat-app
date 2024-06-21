@@ -2,6 +2,7 @@ package com.raf.catalist.cats.list
 
 import android.util.Log
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import coil.compose.SubcomposeAsyncImage
@@ -22,11 +23,16 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.AssistChip
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -75,6 +81,8 @@ fun NavGraphBuilder.breedsListScreen(
 //  Will create mutableState, so we do not have to create coroutines
     val state by breedsListViewModel.state.collectAsState()
     Log.d("Assist chip", state.query) // TODO: set query
+
+
     BreedsListScreen(
         state = state,
         eventPublisher = {
@@ -83,7 +91,8 @@ fun NavGraphBuilder.breedsListScreen(
         onItemClick = {
             Log.d("asdads", it.id)
             navController.navigate(route = "breeds/${it.id}")
-        }
+        },
+        navController
     )
 }
 
@@ -94,7 +103,8 @@ fun NavGraphBuilder.breedsListScreen(
 fun BreedsListScreen(
     state: BreedsListState,
     eventPublisher: (BreedListUiEvent) -> Unit,
-    onItemClick: (BreedUiModel) -> Unit
+    onItemClick: (BreedUiModel) -> Unit,
+    navController: NavController
 ) {
     Scaffold (
         topBar = {
@@ -106,8 +116,37 @@ fun BreedsListScreen(
                  )
              )
         },
-
+        floatingActionButton = {
+            Column {
+                FloatingActionButton(
+                    onClick = {   navController.navigate(route = "quizHome") },
+                    modifier = Modifier.padding(8.dp),
+                    containerColor =  MaterialTheme.colorScheme.primary,
+                    contentColor = Color.White
+                ) {
+                    Icon(imageVector = Icons.Default.PlayArrow, contentDescription = "Quiz")
+                }
+                FloatingActionButton(
+                    onClick = { navController.navigate(route = "leaderboard") },
+                    modifier = Modifier.padding(8.dp),
+                    containerColor =  MaterialTheme.colorScheme.primary,
+                    contentColor = Color.White
+                ) {
+                    Icon(imageVector = Icons.Default.Menu, contentDescription = "Leaderboard")
+                }
+                FloatingActionButton(
+                    onClick = { navController.navigate(route = "userDetails") },
+                    modifier = Modifier.padding(8.dp),
+                    containerColor =  MaterialTheme.colorScheme.primary,
+                    contentColor = Color.White
+                ) {
+                    Icon(imageVector = Icons.Default.Person, contentDescription = "Profile")
+                }
+            }
+        },
         content = {
+
+
             if(state.loading){
                 Box(
                     modifier = Modifier.fillMaxSize(),

@@ -81,7 +81,7 @@ dependencies {
     implementation("com.github.skydoves:cloudy:0.1.2")
     implementation("androidx.compose.animation:animation:1.3.1")
     implementation("com.google.accompanist:accompanist-coil:0.15.0")
-
+//    implementation ("androidx.navigation:navigation-compose:2.4.0-alpha01")
 
 
 
@@ -101,6 +101,7 @@ dependencies {
     implementation("androidx.navigation:navigation-fragment-ktx:$nav_version")
     implementation("androidx.navigation:navigation-ui-ktx:$nav_version")
     implementation("androidx.navigation:navigation-compose:$nav_version")
+    implementation ("androidx.compose.material:material:1.4.2")
 
 
     // Retrofit
