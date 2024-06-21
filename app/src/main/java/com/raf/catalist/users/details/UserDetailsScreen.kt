@@ -77,7 +77,7 @@ fun NavGraphBuilder.userDetails(
                 username = state.value.user!!.username,
                 email = state.value.user!!.mail
             )
-            UserDetails(userDetails = user, state)
+            UserDetails(userDetails = user, state, navController)
 
         }
         else navController.navigate("home") {
@@ -86,8 +86,6 @@ fun NavGraphBuilder.userDetails(
             }
         }
     }
-
-
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -96,7 +94,7 @@ fun NavGraphBuilder.userDetails(
 fun UserDetails(
     userDetails: UserDetailsData,
     state: State<UserContract.UserUiState>,
-
+    navController: NavController,
     ) {
     val scrollState = rememberLazyListState()
 
@@ -133,7 +131,7 @@ fun UserDetails(
                 // Edit button
                 Button(
                         onClick = {
-                            {}
+                            navController.navigate("userEdit")
                         }, modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 7.dp).padding(horizontal = 11.dp),

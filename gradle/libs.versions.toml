@@ -14,6 +14,7 @@ composeBom = "2023.08.00"
 material3Android = "1.2.1"
 zoomable = "<version>"
 zoomlayout = "1.9.0"
+annotations = "15.0"
 
 [libraries]
 accompanist-pager = { module = "com.google.accompanist:accompanist-pager", version.ref = "accompanistPager" }
@@ -36,6 +37,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-material3-android = { group = "androidx.compose.material3", name = "material3-android", version.ref = "material3Android" }
 zoomable = { module = "com.mxalbert.zoomable:zoomable", version.ref = "zoomable" }
 zoomlayout = { module = "com.visualstudio:zoomlayout", version.ref = "zoomlayout" }
+annotations = { group = "org.jetbrains", name = "annotations", version.ref = "annotations" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

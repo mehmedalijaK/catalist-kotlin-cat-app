@@ -59,6 +59,19 @@ class UserViewModel @Inject constructor(
                             userRepository.createUser(firstName = it.firstName, lastName = it.lastName,
                                 mail = it.mail, username = it.username)
                         }
+
+                        is UserUiEvent.updateUser -> {
+                            userRepository.updateUser(
+                                User(
+                                    id = it.id,
+                                    username = it.username,
+                                    mail = it.mail,
+                                    lastName = it.lastName,
+                                    firstName = it.firstName,
+                                    ranking = it.ranking
+                                )
+                            )
+                        }
                     }
                 }
             }

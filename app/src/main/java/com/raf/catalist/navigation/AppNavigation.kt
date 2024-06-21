@@ -16,6 +16,7 @@ import com.raf.catalist.cats.quiz.quizHome
 import com.raf.catalist.leaderboard.leaderboard
 import com.raf.catalist.users.auth.user
 import com.raf.catalist.users.details.userDetails
+import com.raf.catalist.users.details.userEdit
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -35,6 +36,11 @@ fun AppNavigation() {
 
         userDetails(
             route = "userDetails",
+            navController = navController
+        )
+
+        userEdit(
+            route = "userEdit",
             navController = navController
         )
 
