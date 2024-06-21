@@ -11,4 +11,5 @@ data class User(
     @ColumnInfo(name = "last_name") val lastName: String,
     val username: String,
     val mail: String,
+    var ranking: Int? = -1
 )

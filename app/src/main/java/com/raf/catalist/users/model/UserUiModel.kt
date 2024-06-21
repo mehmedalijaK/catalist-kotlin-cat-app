@@ -5,5 +5,6 @@ data class UserUiModel(
     val firstName: String,
     val lastName: String,
     val username: String,
-    val mail: String
+    val mail: String,
+    val ranking: Int
 )

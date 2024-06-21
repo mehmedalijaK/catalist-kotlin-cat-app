@@ -5,6 +5,9 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.raf.catalist.cats.list.BreedListUiEvent
+import com.raf.catalist.cats.quiz.model.GameUiModel
+import com.raf.catalist.cats.repository.GameRepository
+import com.raf.catalist.db.game.Game
 import com.raf.catalist.db.user.User
 import com.raf.catalist.users.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -26,6 +29,7 @@ import kotlinx.coroutines.withContext
 class UserViewModel @Inject constructor(
     savedStateHandle: SavedStateHandle,
     private val userRepository: UserRepository,
+    private val repositoryGame: GameRepository
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(UserUiState())
@@ -37,6 +41,7 @@ class UserViewModel @Inject constructor(
         fetchUsers()
         observeUsers()
         observeEvents()
+        observeGamesFlow()
     }
 
     fun publishEvent(event: UserUiEvent) {
@@ -57,6 +62,19 @@ class UserViewModel @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    private fun observeGamesFlow() {
+        // We are launching a new coroutine
+        viewModelScope.launch {
+            // Which will observe all changes to our passwords
+            withContext(Dispatchers.IO){
+                repositoryGame.observeGamesFlow().distinctUntilChanged().collect {
+                    setState { copy(games = it.map {it.asGameUiModel()}) }
+                }
+            }
+
         }
     }
 
@@ -88,11 +106,21 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    private fun User.asUserUI() = UserUiModel(
+    private fun User.asUserUI() = this.ranking?.let {
+        UserUiModel(
         id = this.id,
         lastName = this.lastName,
         firstName = this.firstName,
         username = this.username,
-        mail = this.mail
+        mail = this.mail,
+        ranking = it
+    )
+    }
+
+    private fun Game.asGameUiModel() = GameUiModel(
+        id = this.id,
+        userId = this.userId,
+        rightAnswers = this.rightAnswers,
+        score = this.score
     )
 }

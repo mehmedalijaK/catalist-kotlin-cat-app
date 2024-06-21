@@ -122,7 +122,9 @@ class QuizViewModel @Inject constructor(
                                 result = it.quizResultUser.result
                             )
 
-                            leaderboardRepository.postResult(quizresult)
+                            val result = leaderboardRepository.postResult(quizresult)
+                            user.ranking = result.ranking
+                            userRepository.updateUser(user)
                         }
                     }
                 }

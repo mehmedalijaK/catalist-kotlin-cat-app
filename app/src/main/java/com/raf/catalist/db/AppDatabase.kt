@@ -17,7 +17,7 @@ import com.raf.catalist.db.user.UserDao
         Image::class,
         Game::class
     ],
-    version = 10,
+    version = 12,
     exportSchema = true
 )
 abstract class AppDatabase : RoomDatabase() {

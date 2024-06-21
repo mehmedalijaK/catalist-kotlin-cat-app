@@ -15,6 +15,7 @@ import com.raf.catalist.cats.quiz.quiz
 import com.raf.catalist.cats.quiz.quizHome
 import com.raf.catalist.leaderboard.leaderboard
 import com.raf.catalist.users.auth.user
+import com.raf.catalist.users.details.userDetails
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,11 +25,16 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "auth"
+        startDestination = "userDetails"
     ){
 
         user(
             route = "auth",
+            navController = navController
+        )
+
+        userDetails(
+            route = "userDetails",
             navController = navController
         )
 
@@ -39,6 +45,11 @@ fun AppNavigation() {
 
         quiz(
             route = "quiz",
+            navController = navController
+        )
+
+        leaderboard(
+            route = "leaderboard",
             navController = navController
         )
 

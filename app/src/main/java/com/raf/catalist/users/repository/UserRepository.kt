@@ -15,6 +15,7 @@ class UserRepository @Inject constructor(
         database.userDao().insert(User(firstName = firstName, lastName = lastName, mail = mail, username = username))
     }
     fun getUser() = database.userDao().getUser()
+    fun updateUser(user: User) = database.userDao().updateUser(user)
 
 
 }

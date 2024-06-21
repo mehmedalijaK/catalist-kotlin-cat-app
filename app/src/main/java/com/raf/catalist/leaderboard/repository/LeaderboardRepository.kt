@@ -10,9 +10,5 @@ import javax.inject.Inject
 class LeaderboardRepository @Inject constructor() {
     private val leaderBoardApi: LeaderBoardApi = retrofit.create(LeaderBoardApi::class.java)
     suspend fun getLeaderboard() : List<QuizResult> = leaderBoardApi.getLeaderboard(3)
-
-    suspend fun postResult(quizResult: QuizResultUser){
-        var response = leaderBoardApi.postResult(quizResult)
-        Log.d("msg", response.toString())
-    }
+    suspend fun postResult(quizResult: QuizResultUser) =  leaderBoardApi.postResult(quizResult)
 }

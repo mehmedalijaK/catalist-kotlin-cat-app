@@ -44,8 +44,6 @@ fun NavGraphBuilder.quizHome(
     navController: NavController
 ) = composable(route = route){
 
-
-
     val quizHomeViewModel = hiltViewModel<QuizHomeViewModel>()
     val state by quizHomeViewModel.state.collectAsState()
 
@@ -83,7 +81,7 @@ fun QuizHomeScreen(navController: NavController, state: QuizHomeUiState) {
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Column {
-                        Text(text = "Hi, Mehmedalija", fontSize = 20.sp)
+                        Text(text = "Hello!", fontSize = 20.sp)
                         Text(text = "Ready to play?", fontSize = 14.sp, color = Color.Gray)
                     }
                     Spacer(modifier = Modifier.weight(1f))
