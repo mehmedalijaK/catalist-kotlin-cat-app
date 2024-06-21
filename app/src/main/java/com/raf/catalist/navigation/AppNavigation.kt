@@ -26,7 +26,7 @@ fun AppNavigation() {
 
     NavHost(
         navController = navController,
-        startDestination = "userDetails"
+        startDestination = "auth"
     ){
 
         user(

@@ -31,24 +31,29 @@ class BreedsRepository @Inject constructor(
 
     suspend fun getBreeds() {
 
-        val allBreeds = breedsApi.getAllBreeds()
+        try {
+            val allBreeds = breedsApi.getAllBreeds()
 
-        val allPhotos = mutableListOf<Image>()
-        allBreeds.forEachIndexed { index, breed ->
-            breed.image?.id?.let {
-                Image(
-                    id = it, height = breed.image.height,
-                    width = breed.image.width, url = breed.image.url, breedId = breed.id
-                )
-            }?.let { allPhotos.add(it) }
+            val allPhotos = mutableListOf<Image>()
+            allBreeds.forEachIndexed { index, breed ->
+                breed.image?.id?.let {
+                    Image(
+                        id = it, height = breed.image.height,
+                        width = breed.image.width, url = breed.image.url, breedId = breed.id
+                    )
+                }?.let { allPhotos.add(it) }
+            }
+
+            database.withTransaction {
+                database.breedDao().upsertAllBreeds(allBreeds
+                    .map { it.asBreedDbModel() }
+                    .toMutableList())
+                database.breedDao().upsertAllImages(allPhotos)
+            }
+        }catch (e : Exception){
+
         }
 
-        database.withTransaction {
-            database.breedDao().upsertAllBreeds(allBreeds
-                .map { it.asBreedDbModel() }
-                .toMutableList())
-            database.breedDao().upsertAllImages(allPhotos)
-        }
 
     }
 
